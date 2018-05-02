@@ -19,5 +19,5 @@ Post Body
 
 ### TODO
 1. Execption catch, such as (1) file does not exist in bucket, (2) bucket does not exist, (3) file is empty or cannot read by Pandas
-2. Multiple file queue (cross file queue): in this scenario, usually create an index file after file upload, when Grafana require data, we should queue file index to identify file name and bucket at the first stage, then queue the file accroding to the index result
+2. Multiple file queue (cross file queue): in this scenario, usually create an index file after file upload, when Grafana require data, we should queue index to identify file name and bucket at the first stage, then queue the file accroding to result
 3. Cloud Foundry App-lization, you should create your own manifest file and push it to WISE-PaaS
