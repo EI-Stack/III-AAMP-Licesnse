@@ -22,4 +22,4 @@ Post Body
 2. Multiple file queue (cross file queue): in this scenario, usually create an index file after file upload, when Grafana require data, we should queue index to identify file name and bucket at the first stage, then queue the file accroding to result
 3. Cloud Foundry App-lization, you should create your own manifest file and push it to WISE-PaaS
 
-![image](python_read_s3_bin.png)
+![image](python_read_s3_bin.PNG)
