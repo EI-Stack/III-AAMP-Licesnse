@@ -15,11 +15,24 @@ from flask import request
 app = Flask(__name__)
 
 
+@app.route("/", methods=['GET','POST'])
+def test_1():
+    """
+    for simple json.
+    official page: should return 200 ok. Used for "Test connection" on the datasource config page.
+    """
+    str_msg = 'test simple json with /'
 
-@app.route('/blob/api/v1.0/get_content', methods=['POST'])
+    return jsonify({'msg': str_msg}), 200
+
+
+#@app.route('/blob/api/v1.0/get_content', methods=['POST'])
+@app.route('/search', methods=['POST'])
 def get_content():
     # retrieve post JSON object
-    jsonobj = request.get_json()
+    json_request = request.get_json()
+    tempobj = json_request['targets'][0]['target']
+    jsonobj = json.load(tempobj)
 
     ACCESS_KEY = jsonobj['access_key']
     SECRET_KEY = jsonobj['secret_key']
