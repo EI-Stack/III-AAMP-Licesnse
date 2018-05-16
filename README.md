@@ -2,7 +2,11 @@
 
 ### Request
 
-`POST /blob/api/v1.0/get_content/`
+`POST|GET /`
+
+For Grafana test connection
+
+`POST /query`
 
 Post Body
 
@@ -15,7 +19,25 @@ Post Body
 |bucket    |bucket name which stored queue content                                       |
 |filename  |file to be queue                                                             |
 
-`example: {"access_key":"d6dfc339a1acde32aa844b8c9e", "secret_key":"ef395b3de6bf6490532ced797e", "host":"124.9.xxx.38", "port":xxx, "bucket":"owen_test", "filename":"iris.csv"}`
+Example
+`{
+	"panelId": 2, 
+	"targets": [
+		{
+			"target": "{'access_key':'d6dfc3363d0449a1acde32aa844b8c9e', 'secret_key':'ef395b3de653495bbf6490532ced797e', 'host':'124.9.14.38', 'port':8080, 'bucket':'owen_test', 'filename':'test.bin'}", 
+			"refId": "A", "type": "timeserie"
+		}
+	], 
+	"range": {"from": "2018-05-15T06:40:57.454Z", "to": "2018-05-15T12:40:57.454Z", 
+	"raw": {"from": "now-6h", "to": "now"}}, 
+	"intervalMs": 30000, 
+	"interval": "30s", 
+	"maxDataPoints": 683, 
+	"scopedVars": {"__interval": {"text": "30s", "value": "30s"}, 
+	"__interval_ms": {"text": 30000, "value": 30000}}, 
+	"rangeRaw": {"from": "now-6h", "to": "now"}, 
+	"timezone": "browser"
+}`
 
 ### TODO
 1. Execption catch, such as (1) file does not exist in bucket, (2) bucket does not exist, (3) file is empty or cannot read by Pandas
