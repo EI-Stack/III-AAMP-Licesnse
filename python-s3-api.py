@@ -5,8 +5,10 @@ import boto.s3.connection
 import pandas as pd
 import numpy
 import os
+import json
 from flask import Flask
 from flask import request
+from flask import jsonify
 
 
 
@@ -27,18 +29,19 @@ def test_1():
 
 
 #@app.route('/blob/api/v1.0/get_content', methods=['POST'])
-@app.route('/search', methods=['POST'])
+@app.route('/query', methods=['POST'])
 def get_content():
     # retrieve post JSON object
-    json_request = request.get_json()
-    tempobj = json_request['targets'][0]['target']
-    jsonobj = json.load(tempobj)
+    jsonobj = request.get_json(silent=True)
+    jsonobj = json.dumps(jsonobj['targets'][0]['target'])
+    jsonobj = jsonobj.replace("\"", "")
+    jsonobj = jsonobj.replace("'", "\"")
+    jsonobj = json.loads(jsonobj)
 
     ACCESS_KEY = jsonobj['access_key']
     SECRET_KEY = jsonobj['secret_key']
     HOST = jsonobj['host']
     PORT = jsonobj['port']
-
     BUCKET_NAME = jsonobj['bucket']
     FILE_NAME = jsonobj['filename']
 
