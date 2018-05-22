@@ -42,19 +42,19 @@ Example
 ### Configure Grafana
 
 #### Add Datasource
-![image](grafana_create_datasource.PNG)
+![image](grafana_create_datasource.PNG =400x)
 
 #### Add a Plotly
-![image](grafana_metrics.PNG)
-![image](grafana_display_x.PNG)
-![image](grafana_display_y.PNG)
+![image](grafana_metrics.PNG =400x)
+![image](grafana_display_x.PNG =400x)
+![image](grafana_display_y.PNG =400x)
 
 #### Result
-![image](grafana_outcome.PNG)
+![image](grafana_outcome.PNG =400x)
 
 ### TODO
 1. Execption catch, such as (1) file does not exist in bucket, (2) bucket does not exist, (3) file is empty or cannot read by Pandas
 2. Multiple file queue (cross file queue): in this scenario, usually create an index file after file upload, when Grafana require data, we should queue index to identify file name and bucket at the first stage, then queue the file accroding to result
 3. Cloud Foundry App-lization, you should create your own manifest file and push it to WISE-PaaS
 
-![image](python_read_s3_bin.PNG)
+![image](python_read_s3_bin.PNG =400x)
