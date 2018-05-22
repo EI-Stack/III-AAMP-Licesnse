@@ -13,7 +13,6 @@ from flask import jsonify
 
 
 
-
 app = Flask(__name__)
 
 
@@ -31,6 +30,7 @@ def test_1():
 #@app.route('/blob/api/v1.0/get_content', methods=['POST'])
 @app.route('/query', methods=['POST'])
 def get_content():
+
     # retrieve post JSON object
     jsonobj = request.get_json(silent=True)
     jsonobj = json.dumps(jsonobj['targets'][0]['target'])
@@ -38,6 +38,7 @@ def get_content():
     jsonobj = jsonobj.replace("'", "\"")
     jsonobj = json.loads(jsonobj)
 
+    # load value of key for access blob container (bucket)
     ACCESS_KEY = jsonobj['access_key']
     SECRET_KEY = jsonobj['secret_key']
     HOST = jsonobj['host']
@@ -56,6 +57,7 @@ def get_content():
                  )
 
     # goto bucket and get file accroding to the file name
+    # TODO: cache exception if file not exist
     bucket = s3_connection.get_bucket(BUCKET_NAME, validate=False)
     key = bucket.get_key(FILE_NAME)
     key.get_contents_to_filename(FILE_NAME)
@@ -63,13 +65,27 @@ def get_content():
     # read bin file and translate it to JSON formate
     bin_data = numpy.fromfile(FILE_NAME, dtype='>d')
     df_file = pd.DataFrame(data = bin_data)
-    #df_file = pd.read_csv(FILE_NAME)
 
     # delete file which stored in local
     os.remove(FILE_NAME)
 
-    return df_file.to_json(orient='split')
+    # load 'data' and 'index' in bin file, and append it into a list
+    # follow data format from Grafana: https://github.com/grafana/simple-json-datasource/blob/master/README.md
+    jsonobj = json.loads(df_file.to_json(orient='split'))
+    datapoints_array = []
+    for i in range(0, jsonobj['index'][-1]):
+        datapoints_array.append([jsonobj['data'][i][0], jsonobj['index'][i]])
+
+    #TODO: group data by mean (or preprocess before data upload to S3
+    # construct json array for responding
+    dict_data = {}
+    dict_data["target"] = FILE_NAME
+    dict_data["datapoints"] = datapoints_array
+    jsonarr = json.dumps([dict_data])
+
+    return str(jsonarr)
+
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=8080, debug=True)
