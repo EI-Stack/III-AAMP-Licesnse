@@ -42,7 +42,7 @@ Example
 ### Configure Grafana
 
 #### Add Datasource
-![image](grafana_create_datasource.PNG =400x)
+![image](grafana_create_datasource.PNG){ width: 200px; }
 
 #### Add a Plotly
 ![image](grafana_metrics.PNG =400x)
