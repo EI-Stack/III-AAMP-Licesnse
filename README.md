@@ -39,6 +39,19 @@ Example
 	"timezone": "browser"
 }`
 
+### Configure Grafana
+
+#### Add Datasource
+![image](grafana_create_datasource.PNG)
+
+#### Add a Plotly
+![image](grafana_metrics.PNG)
+![image](grafana_display_x.PNG)
+![image](grafana_display_y.PNG)
+
+#### Result
+![image](grafana_outcome.PNG)
+
 ### TODO
 1. Execption catch, such as (1) file does not exist in bucket, (2) bucket does not exist, (3) file is empty or cannot read by Pandas
 2. Multiple file queue (cross file queue): in this scenario, usually create an index file after file upload, when Grafana require data, we should queue index to identify file name and bucket at the first stage, then queue the file accroding to result
