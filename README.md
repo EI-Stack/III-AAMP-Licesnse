@@ -42,15 +42,17 @@ Example
 ### Configure Grafana
 
 #### Add Datasource
-![image](grafana_create_datasource.PNG){ width: 200px; }
+![image](grafana_create_datasource.PNG)
 
 #### Add a Plotly
-![image](grafana_metrics.PNG =400x)
-![image](grafana_display_x.PNG =400x)
-![image](grafana_display_y.PNG =400x)
+![image](grafana_metrics.PNG)
+
+![image](grafana_display_x.PNG)
+
+![image](grafana_display_y.PNG)
 
 #### Result
-![image](grafana_outcome.PNG =400x)
+![image](grafana_outcome.PNG)
 
 ### TODO
 1. Execption catch, such as (1) file does not exist in bucket, (2) bucket does not exist, (3) file is empty or cannot read by Pandas
