@@ -16,15 +16,18 @@ Post Body
 |secret_key| Key to identify user's premission, example: d6dfc3363d0449a1acde32aa844b8c9e|
 |host      | address of private blob storage, could be a IP address or domain name       |
 |port      | port of private blob storage                                                |
-|bucket    |bucket name which stored queue content                                       |
-|filename  |file to be queue                                                             |
+|bucket    | bucket name which stored queue content                                      |
+|filename  | file to be queue                                                            |
+|sid       | ID of Smart Machine Box, ex. smartbox11 signal Data                         |
+|tag       | ID of tag, ex. 1Y510110100                                                  |
+|date      | date, ex. 2018/6/10, 2018/10/6                                              |
 
 Example
 `{
 	"panelId": 2, 
 	"targets": [
 		{
-			"target": "{'access_key':'d6dfc3363d0449a1acde32aa844b8c9e', 'secret_key':'ef395b3de653495bbf6490532ced797e', 'host':'124.9.14.38', 'port':8080, 'bucket':'owen_test', 'filename':'test.bin'}", 
+			"target": "{'access_key':'d6dfc3363d0449a1acde32aa844b8c9e', 'secret_key':'ef395b3de653495bbf6490532ced797e', 'host':'124.9.14.38', 'port':8080, 'bucket':'FOMOS-Y5', 'filename':'Raw Data-1-1Y510110100-00-01-12_8192.bin', 'sid':'smartbox11 signal Data', 'tag':'1Y510110100', 'date':'2018/6/10'}", 
 			"refId": "A", "type": "timeserie"
 		}
 	], 
