@@ -3,9 +3,13 @@
 import boto
 import boto.s3.connection
 import pandas as pd
-import numpy
+import numpy as np
 import os
 import json
+
+import binascii
+import struct
+
 from flask import Flask
 from flask import request
 from flask import jsonify
@@ -63,8 +67,9 @@ def get_content():
     key.get_contents_to_filename(FILE_NAME)
 
     # read bin file and translate it to JSON formate
-    bin_data = numpy.fromfile(FILE_NAME, dtype='>d')
-    df_file = pd.DataFrame(data = bin_data)
+    #bin_data = numpy.fromfile(FILE_NAME, dtype='>d')
+    #df_file = pd.DataFrame(data = bin_data)
+    df_file = convert_bin(FILE_NAME)
 
     # delete file which stored in local
     os.remove(FILE_NAME)
@@ -84,7 +89,25 @@ def get_content():
     jsonarr = json.dumps([dict_data])
 
     return str(jsonarr)
+    #return str(df_file.index.values)
 
+
+def convert_bin (filename):
+    bytes_read = open(filename, "rb").read()
+    size = [hexint(bytes_read[(i*4):((i+1)*4)]) for i in range(2)]
+    signal = [struct.unpack('f',bytes_read[(i*4):((i+1)*4)]) for i in range(2,2+size[0]*size[1])]
+    data = np.array(signal).reshape(size)
+    return_df = pd.DataFrame(data = data)
+    return_df = return_df.T
+    return_df = return_df.groupby(np.arange(len(return_df))//32).mean()
+
+    #print(len(return_df))
+
+    return return_df
+
+
+def hexint(b,bReverse=True): 
+    return int(binascii.hexlify(b[::-1]), 16) if bReverse else int(binascii.hexlify(b), 16)
 
 
 if __name__ == '__main__':
