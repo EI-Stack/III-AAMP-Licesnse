@@ -49,6 +49,10 @@ def get_content():
     PORT = jsonobj['port']
     BUCKET_NAME = jsonobj['bucket']
     FILE_NAME = jsonobj['filename']
+    ID_MACHINE = jsonobj['sid']
+    ID_TAG = jsonobj['tag']
+    S3_PATH = jsonobj['date']
+
 
     # establish connection between blob storage and this client app
     s3_connection = boto.connect_s3(
@@ -59,11 +63,13 @@ def get_content():
                    is_secure=False,               # uncomment if you are not using ssl
                    calling_format = boto.s3.connection.OrdinaryCallingFormat(),
                  )
+    bucket = s3_connection.get_bucket(BUCKET_NAME, validate=False)
 
     # goto bucket and get file accroding to the file name
     # TODO: cache exception if file not exist
-    bucket = s3_connection.get_bucket(BUCKET_NAME, validate=False)
-    key = bucket.get_key(FILE_NAME)
+    PATH_DEST = ID_MACHINE + '/' + ID_TAG + '/' + S3_PATH + '/'
+    s3_bin_data = os.path.join(PATH_DEST, FILE_NAME)
+    key = bucket.get_key(s3_bin_data)
     key.get_contents_to_filename(FILE_NAME)
 
     # read bin file and translate it to JSON formate
@@ -99,7 +105,7 @@ def convert_bin (filename):
     data = np.array(signal).reshape(size)
     return_df = pd.DataFrame(data = data)
     return_df = return_df.T
-    return_df = return_df.groupby(np.arange(len(return_df))//32).mean()
+    return_df = return_df.groupby(np.arange(len(return_df))//256).mean()
 
     #print(len(return_df))
 
