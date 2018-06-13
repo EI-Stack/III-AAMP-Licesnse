@@ -17,7 +17,7 @@ Post Body
 |host      | address of private blob storage, could be a IP address or domain name       |
 |port      | port of private blob storage                                                |
 |bucket    | bucket name which stored queue content                                      |
-|filename  | file to be queue                                                            |
+|filename  | file name to be visualized, ex. max.bin, min.bin, mean.bin                  |
 |sid       | ID of Smart Machine Box, ex. smartbox11 signal Data                         |
 |tag       | ID of tag, ex. 1Y510110100                                                  |
 |date      | date, ex. 2018/6/10, 2018/10/6                                              |
