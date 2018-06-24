@@ -1,6 +1,6 @@
 ---
 applications:
-- name: owen_s3_api_1
+- name: s3_api
   memory: 512M
   instances: 1
   buildpack: python_buildpack_offline

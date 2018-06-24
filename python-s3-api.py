@@ -70,8 +70,11 @@ def get_content():
     PATH_DEST = ID_MACHINE + '/' + ID_TAG + '/' + S3_PATH + '/'
     s3_bin_data = os.path.join(PATH_DEST, FILE_NAME)
     key = bucket.get_key(s3_bin_data)
-    key.get_contents_to_filename(FILE_NAME)
 
+    try:
+        key.get_contents_to_filename(FILE_NAME)
+    except:
+        return 'File not found'
     # read bin file and translate it to JSON formate
     #bin_data = numpy.fromfile(FILE_NAME, dtype='>d')
     #df_file = pd.DataFrame(data = bin_data)
