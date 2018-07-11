@@ -126,11 +126,11 @@ def convert_bin (filename, pd_type):
     return_df = return_df.T
 
     if pd_type == 'mean':
-        return_df = return_df.groupby(np.arange(len(return_df))//4096).mean()
+        return_df = return_df.groupby(np.arange(len(return_df))//256).mean()
     elif pd_type == 'max':
-        return_df = return_df.groupby(np.arange(len(return_df))//4096).max()
+        return_df = return_df.groupby(np.arange(len(return_df))//256).max()
     else:
-        return_df = return_df.groupby(np.arange(len(return_df))//4096).min()
+        return_df = return_df.groupby(np.arange(len(return_df))//256).min()
 
     #print(len(return_df))
 
