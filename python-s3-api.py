@@ -56,7 +56,7 @@ def get_content():
     ID_TAG = jsonobj['tag']
     S3_PATH = jsonobj['date']
     SAMPLE_RATE = 8192
-    DISPLAY_POINT = 32
+    DISPLAY_POINT = 8
 
 
     # establish connection between blob storage and this client app
@@ -111,7 +111,7 @@ def get_content():
     datapoints_array_mean = []
     datapoints_array_max = []
     datapoints_array_min = []
-    for i in range(0, jsonobj_mean['index'][-1]):
+    for i in range(0, DISPLAY_POINT):
         #datapoints_array_mean.append([jsonobj_mean['data'][i][0], jsonobj_mean['index'][i]])
         #datapoints_array_max.append([jsonobj_max['data'][i][0], jsonobj_max['index'][i]])
         #datapoints_array_min.append([jsonobj_min['data'][i][0], jsonobj_min['index'][i]])
@@ -148,14 +148,14 @@ def convert_bin (filename, pd_type, DISPLAY_POINT):
     return_df = return_df.T
     file_length = len(return_df)
 
-    length = file_length // DISPLAY_POINT
+    length = file_length / DISPLAY_POINT
 
     if pd_type == 'mean':
-        return_df = return_df.groupby(np.arange(len(return_df))//length).mean()
+        return_df = return_df.groupby(np.arange(len(return_df))/length).mean()
     elif pd_type == 'max':
-        return_df = return_df.groupby(np.arange(len(return_df))//length).max()
+        return_df = return_df.groupby(np.arange(len(return_df))/length).max()
     else:
-        return_df = return_df.groupby(np.arange(len(return_df))//length).min()
+        return_df = return_df.groupby(np.arange(len(return_df))/length).min()
 
     #print(len(return_df))
 
