@@ -89,9 +89,9 @@ def get_content():
     #print('timestamp = ' + key_timestamp['ts'])
     
     # read bin file and translate it to JSON formate
-    df_file_mean, file_length = convert_bin(FILE_NAME, 'mean')
-    df_file_max, file_length = convert_bin(FILE_NAME, 'max')
-    df_file_min, file_length = convert_bin(FILE_NAME, 'min')
+    df_file_mean, file_length = convert_bin(FILE_NAME, 'mean', DISPLAY_POINT)
+    df_file_max, file_length = convert_bin(FILE_NAME, 'max', DISPLAY_POINT)
+    df_file_min, file_length = convert_bin(FILE_NAME, 'min', DISPLAY_POINT)
 
     # calculate start-time and end-time
     #TIME_START = datetime.datetime.fromtimestampint(int(key_timestamp)).strftime('%Y-%m-%d %H:%M:%S')
@@ -139,7 +139,7 @@ def get_content():
     #return str(df_file.index.values)
 
 
-def convert_bin (filename, pd_type):
+def convert_bin (filename, pd_type, DISPLAY_POINT):
     bytes_read = open(filename, "rb").read()
     size = [hexint(bytes_read[(i*4):((i+1)*4)]) for i in range(2)]
     signal = [struct.unpack('f',bytes_read[(i*4):((i+1)*4)]) for i in range(2,2+size[0]*size[1])]
