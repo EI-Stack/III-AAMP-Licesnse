@@ -96,6 +96,11 @@ def get_content():
     # calculate start-time and end-time
     #TIME_START = datetime.datetime.fromtimestampint(int(key_timestamp)).strftime('%Y-%m-%d %H:%M:%S')
     TIME_START = int(datetime.datetime.strptime(key_timestamp, '%Y-%m-%d %H:%M:%S').strftime('%s')) * 1000
+    
+    a = file_length / SAMPLE_RATE
+    print ('total second=', a)
+    b = a / DISPLAY_POINT
+    print ('delta in ms=', b)
     TIME_DELTA = file_length / SAMPLE_RATE / DISPLAY_POINT * 1000
     print (file_length, SAMPLE_RATE, DISPLAY_POINT)
     print ('TIME_DELTA=', TIME_DELTA)
