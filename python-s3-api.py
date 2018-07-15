@@ -56,6 +56,7 @@ def get_content():
     ID_TAG = jsonobj['tag']
     S3_PATH = jsonobj['date']
     SAMPLE_RATE = 8192
+    DISPLAY_POINT = 32
 
 
     # establish connection between blob storage and this client app
@@ -95,7 +96,8 @@ def get_content():
     # calculate start-time and end-time
     #TIME_START = datetime.datetime.fromtimestampint(int(key_timestamp)).strftime('%Y-%m-%d %H:%M:%S')
     TIME_START = int(datetime.datetime.strptime(key_timestamp, '%Y-%m-%d %H:%M:%S').strftime('%s')) * 1000
-    TIME_DELTA = file_length // file_length
+    TIME_DELTA = file_length // SAMPLE_RATE // DISPLAY_POINT * 1000
+    print ('TIME_DELTA=', TIME_DELTA)
 
     # delete file which stored in local
     os.remove(FILE_NAME)
@@ -146,7 +148,7 @@ def convert_bin (filename, pd_type):
     return_df = return_df.T
     file_length = len(return_df)
 
-    length = 8192
+    length = file_length // DISPLAY_POINT
 
     if pd_type == 'mean':
         return_df = return_df.groupby(np.arange(len(return_df))//length).mean()
