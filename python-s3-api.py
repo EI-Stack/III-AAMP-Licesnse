@@ -96,7 +96,7 @@ def get_content():
     # calculate start-time and end-time
     #TIME_START = datetime.datetime.fromtimestampint(int(key_timestamp)).strftime('%Y-%m-%d %H:%M:%S')
     TIME_START = int(datetime.datetime.strptime(key_timestamp, '%Y-%m-%d %H:%M:%S').strftime('%s')) * 1000
-    TIME_DELTA = file_length // SAMPLE_RATE // DISPLAY_POINT * 1000
+    TIME_DELTA = int(file_length / SAMPLE_RATE / DISPLAY_POINT * 1000)
     print ('TIME_DELTA=', TIME_DELTA)
 
     # delete file which stored in local
