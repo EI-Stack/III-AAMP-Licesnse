@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 import os
 import json
+import datetime
 
 import binascii
 import struct
@@ -54,6 +55,7 @@ def get_content():
     ID_MACHINE = jsonobj['sid']
     ID_TAG = jsonobj['tag']
     S3_PATH = jsonobj['date']
+    SAMPLE_RATE = 8192
 
 
     # establish connection between blob storage and this client app
@@ -68,7 +70,6 @@ def get_content():
     bucket = s3_connection.get_bucket(BUCKET_NAME, validate=False)
 
     # goto bucket and get file accroding to the file name
-    # TODO: cache exception if file not exist
     PATH_DEST = ID_MACHINE + '/' + ID_TAG + '/' + S3_PATH + '/'
     s3_bin_data = os.path.join(PATH_DEST, FILE_NAME)
     key = bucket.get_key(s3_bin_data)
@@ -83,14 +84,18 @@ def get_content():
     key = Key(bucket)
     remote_key = bucket.get_key(s3_bin_data)
     key_timestamp = remote_key.metadata
-    print('timestamp = ' + key_timestamp['ts'])
+    key_timestamp = key_timestamp['ts']
+    #print('timestamp = ' + key_timestamp['ts'])
     
     # read bin file and translate it to JSON formate
-    #bin_data = numpy.fromfile(FILE_NAME, dtype='>d')
-    #df_file = pd.DataFrame(data = bin_data)
-    df_file_mean = convert_bin(FILE_NAME, 'mean')
-    df_file_max = convert_bin(FILE_NAME, 'max')
-    df_file_min = convert_bin(FILE_NAME, 'min')
+    df_file_mean, file_length = convert_bin(FILE_NAME, 'mean')
+    df_file_max, file_length = convert_bin(FILE_NAME, 'max')
+    df_file_min, file_length = convert_bin(FILE_NAME, 'min')
+
+    # calculate start-time and end-time
+    #TIME_START = datetime.datetime.fromtimestampint(int(key_timestamp)).strftime('%Y-%m-%d %H:%M:%S')
+    TIME_START = datetime.datetime.strptime(key_timestamp, '%Y-%m-%d %H:%M:%S').strftime('%s')
+    TIME_DELTA = file_length // file_length
 
     # delete file which stored in local
     os.remove(FILE_NAME)
@@ -105,12 +110,17 @@ def get_content():
     datapoints_array_max = []
     datapoints_array_min = []
     for i in range(0, jsonobj_mean['index'][-1]):
-        datapoints_array_mean.append([jsonobj_mean['data'][i][0], jsonobj_mean['index'][i]])
-        datapoints_array_max.append([jsonobj_max['data'][i][0], jsonobj_max['index'][i]])
-        datapoints_array_min.append([jsonobj_min['data'][i][0], jsonobj_min['index'][i]])
+        #datapoints_array_mean.append([jsonobj_mean['data'][i][0], jsonobj_mean['index'][i]])
+        #datapoints_array_max.append([jsonobj_max['data'][i][0], jsonobj_max['index'][i]])
+        #datapoints_array_min.append([jsonobj_min['data'][i][0], jsonobj_min['index'][i]])
+        datapoints_array_mean.append([jsonobj_mean['data'][i][0], TIME_START])
+        datapoints_array_max.append([jsonobj_max['data'][i][0], TIME_START])
+        datapoints_array_min.append([jsonobj_min['data'][i][0], TIME_START])
 
-    #TODO: group data by mean (or preprocess before data upload to S3
-    # construct json array for responding
+        TIME_START = str(int(TIME_START) + TIME_DELTA)
+
+
+    # construct json array for API response
     dict_data_mean = {}
     dict_data_mean["target"] = 'mean'
     dict_data_mean["datapoints"] = datapoints_array_mean
@@ -134,8 +144,9 @@ def convert_bin (filename, pd_type):
     data = np.array(signal).reshape(size)
     return_df = pd.DataFrame(data = data)
     return_df = return_df.T
+    file_length = len(return_df)
 
-    length = 4096
+    length = 8192
 
     if pd_type == 'mean':
         return_df = return_df.groupby(np.arange(len(return_df))//length).mean()
@@ -146,7 +157,7 @@ def convert_bin (filename, pd_type):
 
     #print(len(return_df))
 
-    return return_df
+    return return_df, file_length
 
 
 def hexint(b,bReverse=True): 
