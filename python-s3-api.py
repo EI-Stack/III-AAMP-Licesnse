@@ -2,6 +2,8 @@
 
 import boto
 import boto.s3.connection
+from boto.s3.key import Key
+
 import pandas as pd
 import numpy as np
 import os
@@ -75,6 +77,14 @@ def get_content():
         key.get_contents_to_filename(FILE_NAME)
     except:
         return 'File not found'
+
+    # get metadata (timestamp)
+    bucket = s3_connection.get_bucket(BUCKET_NAME, validate=False)
+    key = Key(bucket)
+    remote_key = bucket.get_key(s3_bin_data)
+    key_timestamp = remote_key.metadata
+    print('timestamp = ' + key_timestamp['ts'])
+    
     # read bin file and translate it to JSON formate
     #bin_data = numpy.fromfile(FILE_NAME, dtype='>d')
     #df_file = pd.DataFrame(data = bin_data)
@@ -125,12 +135,14 @@ def convert_bin (filename, pd_type):
     return_df = pd.DataFrame(data = data)
     return_df = return_df.T
 
+    length = 4096
+
     if pd_type == 'mean':
-        return_df = return_df.groupby(np.arange(len(return_df))//256).mean()
+        return_df = return_df.groupby(np.arange(len(return_df))//length).mean()
     elif pd_type == 'max':
-        return_df = return_df.groupby(np.arange(len(return_df))//256).max()
+        return_df = return_df.groupby(np.arange(len(return_df))//length).max()
     else:
-        return_df = return_df.groupby(np.arange(len(return_df))//256).min()
+        return_df = return_df.groupby(np.arange(len(return_df))//length).min()
 
     #print(len(return_df))
 
