@@ -99,9 +99,9 @@ def get_content():
     
     a = file_length / SAMPLE_RATE
     print ('total second=', a)
-    b = a / DISPLAY_POINT
+    b = float(a / DISPLAY_POINT)
     print ('delta in ms=', b)
-    TIME_DELTA = file_length / SAMPLE_RATE / DISPLAY_POINT * 1000
+    TIME_DELTA = int(float(file_length / SAMPLE_RATE / DISPLAY_POINT) * 1000)
     print (file_length, SAMPLE_RATE, DISPLAY_POINT)
     print ('TIME_DELTA=', TIME_DELTA)
 
