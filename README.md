@@ -24,21 +24,37 @@ Post Body
 
 Example
 `{
-	"panelId": 2, 
-	"targets": [
-		{
-			"target": "{'access_key':'d6dfc3363d0449a1acde32aa844b8c9e', 'secret_key':'ef395b3de653495bbf6490532ced797e', 'host':'124.9.14.38', 'port':8080, 'bucket':'FOMOS-Y5', 'filename':'Raw Data-1-1Y510110100-00-01-12_8192.bin', 'sid':'smartbox11 signal Data', 'tag':'1Y510110100', 'date':'2018/6/10'}", 
-			"refId": "A", "type": "timeserie"
+	"panelId": 2,
+	"targets": [{
+		"target": "{'access_key':'ee7da6e1bba944829884747df01a1eee', 'secret_key':'d737995ebd3e459db321fb119f006456', 'host':'192.168.123.242', 'port':8080, 'bucket':'FOMOS-Y5-SUMMARY', 'filename':'MAX-1Y520210100-0.bin', 'sid':'smartbox21 Signal Data', 'tag':'1Y520210100', 'date':'2018/7/14'}",
+		"refId": "A",
+		"type": "timeserie"
+	}],
+	"range": {
+		"from": "2018-05-15T06:40:57.454Z",
+		"to": "2018-05-15T12:40:57.454Z",
+		"raw": {
+			"from": "now-6h",
+			"to": "now"
 		}
-	], 
-	"range": {"from": "2018-05-15T06:40:57.454Z", "to": "2018-05-15T12:40:57.454Z", 
-	"raw": {"from": "now-6h", "to": "now"}}, 
-	"intervalMs": 30000, 
-	"interval": "30s", 
-	"maxDataPoints": 683, 
-	"scopedVars": {"__interval": {"text": "30s", "value": "30s"}, 
-	"__interval_ms": {"text": 30000, "value": 30000}}, 
-	"rangeRaw": {"from": "now-6h", "to": "now"}, 
+	},
+	"intervalMs": 30000,
+	"interval": "30s",
+	"maxDataPoints": 683,
+	"scopedVars": {
+		"__interval": {
+			"text": "30s",
+			"value": "30s"
+		},
+		"__interval_ms": {
+			"text": 30000,
+			"value": 30000
+		}
+	},
+	"rangeRaw": {
+		"from": "now-6h",
+		"to": "now"
+	},
 	"timezone": "browser"
 }`
 
