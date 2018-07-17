@@ -56,7 +56,7 @@ def get_content():
     ID_TAG = jsonobj['tag']
     S3_PATH = jsonobj['date']
     SAMPLE_RATE = 8192
-    DISPLAY_POINT = 8
+    DISPLAY_POINT = 256
 
 
     # establish connection between blob storage and this client app
