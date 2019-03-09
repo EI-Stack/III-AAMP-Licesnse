@@ -120,13 +120,13 @@ def get_content():
     time = time_list[3] + ':' + time_list[3] + ':' + time_list[5].split("_")[0]
     key_timestamp = date + ' ' + time
 
+    #TIME_START = int(datetime.datetime.strptime(key_timestamp, '%Y-%m-%d %H:%M:%S').strftime('%s')) * 1000
+    TIME_START = int(datetime.datetime.strptime(DATE, '%Y/%m/%d').strftime('%s')) * 1000
+    TIME_DELTA = float(float(file_length / SAMPLE_RATE) / DISPLAY_POINT) * 1000
+    #TIME_DELTA = 0.1220703125
+    print ('TIME_START', TIME_START)
 
-
-    TIME_START = int(datetime.datetime.strptime(key_timestamp, '%Y-%m-%d %H:%M:%S').strftime('%s')) * 1000
-    TIME_DELTA = file_length * 1000 / SAMPLE_RATE / DISPLAY_POINT
-    print ('TIME_DELTA=', TIME_DELTA)
-
-    # delete file which stored in local
+    # deTIME_DELTAfile which stored in local
     os.remove(FILE_NAME)
 
     # load 'data' and 'index' in bin file, and append it into a list
@@ -144,9 +144,8 @@ def get_content():
         #datapoints_array_max.append([jsonobj_max['data'][i][0], TIME_START])
         #datapoints_array_min.append([jsonobj_min['data'][i][0], TIME_START])
 
-        TIME_START = str(int(TIME_START) + TIME_DELTA)
+        TIME_START = float(TIME_START) + TIME_DELTA
 
-    print(i)
 
     # construct json array for API response
     dict_data_mean = {}
