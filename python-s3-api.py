@@ -42,19 +42,35 @@ def get_content():
     jsonobj = request.get_json(silent=True)
     jsonobj = json.dumps(jsonobj['targets'][0]['target'])
     jsonobj = jsonobj.replace("\"", "")
-    jsonobj = jsonobj.replace("'", "\"")
-    jsonobj = json.loads(jsonobj)
+    #jsonobj = jsonobj.replace("'", "\"")
+    #jsonobj = json.loads(jsonobj)
+
+    EQU_NAME = jsonobj.split('@')[0]
+    FEATURE = jsonobj.split('@')[1]
+    TYPE = jsonobj.split('@')[2]
+
+    print(EQU_NAME)
+    print(FEATURE)
+    print(TYPE)
+
+    jsonobj = request.get_json(silent=True)
+    jsonobj = json.dumps(jsonobj['range']['from'])
+    jsonobj = jsonobj.split('T')[0]
+    jsonobj = jsonobj.replace("\"", "")
+    DATE = jsonobj.replace("-", "/")
+    print(DATE)
 
     # load value of key for access blob container (bucket)
-    ACCESS_KEY = jsonobj['access_key']
-    SECRET_KEY = jsonobj['secret_key']
-    HOST = jsonobj['host']
-    PORT = jsonobj['port']
-    BUCKET_NAME = jsonobj['bucket']
-    FILE_NAME = jsonobj['filename']
-    ID_MACHINE = jsonobj['sid']
-    ID_TAG = jsonobj['tag']
-    S3_PATH = jsonobj['date']
+    ACCESS_KEY = 'cc0b4b06affd4f599dff7607f1556811'
+    SECRET_KEY = 'U7fxYmr8idml083N8zo7JRddXiNbyCmNN'
+    HOST = '192.168.123.226'
+    PORT = 8080
+    BUCKET_NAME = 'FOMOS-Y5'
+    FILE_NAME = 'Raw Data-1-1Y510110100-06-29-06_8192.bin'
+    ID_MACHINE = 'smartbox11 Signal Data'
+    ID_TAG = '1Y510110100'
+    #S3_PATH = jsonobj['date']
+    S3_PATH = '2018/11/18'
     SAMPLE_RATE = 8192
     DISPLAY_POINT = 65536
 
@@ -71,7 +87,7 @@ def get_content():
     bucket = s3_connection.get_bucket(BUCKET_NAME, validate=False)
 
     # goto bucket and get file accroding to the file name
-    PATH_DEST = 'base/' + ID_MACHINE + '/' + ID_TAG + '/' + S3_PATH + '/'
+    PATH_DEST = ID_MACHINE + '/' + ID_TAG + '/' + S3_PATH + '/'
     s3_bin_data = os.path.join(PATH_DEST, FILE_NAME)
     print(s3_bin_data)
     key = bucket.get_key(s3_bin_data)
@@ -98,11 +114,13 @@ def get_content():
     # calculate start-time and end-time
     #TIME_START = datetime.datetime.fromtimestampint(int(key_timestamp)).strftime('%Y-%m-%d %H:%M:%S')
 
-    date_list = date = s3_bin_data.split("/")
-    date = date_list[3] + '-' + date_list[4] + '-' + date_list[5]
-    time_list = s3_bin_data.split("/")[6].split("-")
+    date_list = s3_bin_data.split("/")
+    date = date_list[2] + '-' + date_list[3] + '-' + date_list[4]
+    time_list = s3_bin_data.split("/")[5].split("-")
     time = time_list[3] + ':' + time_list[3] + ':' + time_list[5].split("_")[0]
     key_timestamp = date + ' ' + time
+
+
 
     TIME_START = int(datetime.datetime.strptime(key_timestamp, '%Y-%m-%d %H:%M:%S').strftime('%s')) * 1000
     TIME_DELTA = file_length * 1000 / SAMPLE_RATE / DISPLAY_POINT
@@ -122,11 +140,13 @@ def get_content():
     #datapoints_array_min = []
     for i in range(0, DISPLAY_POINT):
         datapoints_array_mean.append([jsonobj_mean['data'][i][0], TIME_START])
+        #datapoints_array_mean.append([jsonobj_mean['data'][i][0], i])
         #datapoints_array_max.append([jsonobj_max['data'][i][0], TIME_START])
         #datapoints_array_min.append([jsonobj_min['data'][i][0], TIME_START])
 
         TIME_START = str(int(TIME_START) + TIME_DELTA)
 
+    print(i)
 
     # construct json array for API response
     dict_data_mean = {}
