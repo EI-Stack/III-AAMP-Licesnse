@@ -45,12 +45,23 @@ def get_content():
     jsonobj = jsonobj.replace("'", "\"")
     jsonobj = json.loads(jsonobj)
 
+    print(jsonobj)
+    print(type(jsonobj))
+
     # load value of key for access blob container (bucket)
-    ACCESS_KEY = jsonobj['access_key']
-    SECRET_KEY = jsonobj['secret_key']
-    HOST = jsonobj['host']
-    PORT = jsonobj['port']
-    BUCKET_NAME = jsonobj['bucket']
+    #ACCESS_KEY = jsonobj['access_key']
+    #SECRET_KEY = jsonobj['secret_key']
+    ACCESS_KEY = 'cc0b4b06affd4f599dff7607f1556811'
+    SECRET_KEY = 'U7fxYmr8idml083N8zo7JRddXiNbyCmNN']
+
+    #HOST = jsonobj['host']
+    #PORT = jsonobj['port']
+    HOST = '192.168.123.236'
+    PORT = 8080
+
+    #BUCKET_NAME = jsonobj['bucket']
+    BUCKET_NAME = 'FOMOS-Y5'
+
     FILE_NAME = jsonobj['filename']
     ID_MACHINE = jsonobj['sid']
     ID_TAG = jsonobj['tag']
