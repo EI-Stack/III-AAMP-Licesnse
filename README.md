@@ -24,38 +24,41 @@ Post Body
 
 Example
 `{
-	"panelId": 2,
-	"targets": [{
-		"target": "{'access_key':'ee7da6e1bba944829884747df01a1eee', 'secret_key':'d737995ebd3e459db321fb119f006456', 'host':'192.168.123.242', 'port':8080, 'bucket':'FOMOS-Y5-SUMMARY', 'filename':'MAX-1Y520210100-0.bin', 'sid':'smartbox21 Signal Data', 'tag':'1Y520210100', 'date':'2018/7/14'}",
-		"refId": "A",
-		"type": "timeserie"
-	}],
-	"range": {
-		"from": "2018-05-15T06:40:57.454Z",
-		"to": "2018-05-15T12:40:57.454Z",
-		"raw": {
-			"from": "now-6h",
-			"to": "now"
-		}
-	},
-	"intervalMs": 30000,
-	"interval": "30s",
-	"maxDataPoints": 683,
-	"scopedVars": {
-		"__interval": {
-			"text": "30s",
-			"value": "30s"
-		},
-		"__interval_ms": {
-			"text": 30000,
-			"value": 30000
-		}
-	},
-	"rangeRaw": {
-		"from": "now-6h",
-		"to": "now"
-	},
-	"timezone": "browser"
+    "timezone": "browser",
+    "panelId": 2,
+    "dashboardId": 56,
+    "range": {
+        "from": "2019-03-09T01:13:44.138Z",
+        "to": "2019-03-09T07:13:44.138Z",
+        "raw": {
+            "from": "now-6h",
+            "to": "now"
+        }
+    },
+    "rangeRaw": {
+        "from": "now-6h",
+        "to": "now"
+    },
+    "interval": "15s",
+    "intervalMs": 15000,
+    "targets": [
+        {
+            "target": "1Y510110100@Feature@MAX",
+            "refId": "A",
+            "type": "timeserie"
+        }
+    ],
+    "maxDataPoints": 1260,
+    "scopedVars": {
+        "__interval": {
+            "text": "15s",
+            "value": "15s"
+        },
+        "__interval_ms": {
+            "text": 15000,
+            "value": 15000
+        }
+    }
 }`
 
 ### Configure Grafana
