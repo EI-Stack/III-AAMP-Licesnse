@@ -90,7 +90,7 @@ def get_content():
     bucket = s3_connection.get_bucket(BUCKET_NAME, validate=False)
 
     # goto bucket and get file accroding to the file name
-    PATH_DEST = ID_MACHINE + '/' + EQU_ID + '/' + TS + '/'
+    PATH_DEST = ID_MACHINE + '/' + EQU_ID + '/' + TS.strftime('%Y/%m/%d') + '/'
     s3_bin_data = os.path.join(PATH_DEST, FILE_NAME)
     print(s3_bin_data)
     key = bucket.get_key(s3_bin_data)
@@ -168,6 +168,10 @@ def get_content():
     return str(jsonarr)
     #return str(df_file.index.values)
 
+def combine_return (TIME_START, TIME_DELTA, BIN_DF, BIN_LENGTH){
+    return jsonarr
+}
+    
 
 def query_timestamp (TYPE, feature, ChannelName, date):
     
