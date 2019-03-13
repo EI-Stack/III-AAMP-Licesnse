@@ -57,13 +57,12 @@ def get_content():
     print('Feature=' + FEATURE)
     print('Type=' + TYPE)
     print('Date=' + DATE)
-
-    #jsonobj = request.get_json(silent=True)
-    #jsonobj = json.dumps(jsonobj['range']['from'])
-    #jsonobj = jsonobj.split('T')[0]
-    #jsonobj = jsonobj.replace("\"", "")
-    #DATE = jsonobj.replace("-", "/")
-    #print('Date=' + DATE)
+    
+    EQU_ID = convert_equ_name(EQU_NAME)
+    print('EQU_ID='+EQU_ID)
+    TS = query_timestamp(TYPE, FEATURE, EQU_ID, DATE)
+    print(type(TS), TS)
+    ## TODO Retrive bin file
 
     # load value of key for access blob container (bucket)
     ACCESS_KEY = 'cc0b4b06affd4f599dff7607f1556811'
@@ -73,8 +72,8 @@ def get_content():
     BUCKET_NAME = 'FOMOS-Y5'
     FILE_NAME = 'Raw Data-1-1Y510110100-06-29-06_8192.bin'
     ID_MACHINE = 'smartbox11 Signal Data'
-    ID_TAG = '1Y510110100'
-    S3_PATH = '2018/11/18'
+    #ID_TAG = '1Y510110100'
+    #S3_PATH = '2018/11/18'
 
 
 
@@ -91,7 +90,7 @@ def get_content():
     bucket = s3_connection.get_bucket(BUCKET_NAME, validate=False)
 
     # goto bucket and get file accroding to the file name
-    PATH_DEST = ID_MACHINE + '/' + ID_TAG + '/' + S3_PATH + '/'
+    PATH_DEST = ID_MACHINE + '/' + EQU_ID + '/' + TS + '/'
     s3_bin_data = os.path.join(PATH_DEST, FILE_NAME)
     print(s3_bin_data)
     key = bucket.get_key(s3_bin_data)
@@ -101,12 +100,6 @@ def get_content():
     except:
         return 'File not found'
 
-
-    EQU_ID = convert_equ_name(EQU_NAME)
-    print('EQU_ID='+EQU_ID)
-    TS = query_timestamp(TYPE, FEATURE, EQU_ID, DATE)
-    print(TS)
-    ## TODO Retrive bin file
 
     # get metadata (timestamp)
     #bucket = s3_connection.get_bucket(BUCKET_NAME, validate=False)
@@ -336,13 +329,13 @@ def read_influxdb_data(host='192.168.123.245',
     measurement = measurement[-1]
     
     time_end = 'now()' if time_end=='' else "'" + time_end + ' 15:59:00' + "'"
-    print(time_end)
+    #print(time_end)
     
     time_start = 'now()' if time_start=='' else "'" + time_start + ' 16:00:00' + "'"
-    print(time_start)
+    #print(time_start)
     
     querystr = 'select * from "{}" where time > {} and time < {}'.format(measurement,time_start,time_end)
-    print(querystr)
+    #print(querystr)
     
     df = client.query(querystr).get(measurement)
     client.close()
