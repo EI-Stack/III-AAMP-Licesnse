@@ -73,12 +73,6 @@ def get_content():
     SAMPLE_RATE = 8192
     DISPLAY_POINT = 65536
 
-    ## InfluxDB Configuration
-    IDB_HOST = '192.168.123.240'
-    IDB_PORT = 8086
-    IDB_DBNAME = '3243ffc7-76ab-4c5f-a248-ad1ccd68849e'
-    IDB_USER = '9f5b4165-abce-4be7-92f6-20126ad3130b'
-    IDB_PASSWORD = 'RoKZUtYYOK45cqEmhn6k1XniY'
 
 
     # establish connection between blob storage and this client app
@@ -103,7 +97,9 @@ def get_content():
     except:
         return 'File not found'
 
-    query_timestamp(TYPE, FEATURE)
+    #TODO, query EQU_ID
+    EQU_ID = '1Y520220100'
+    query_timestamp(TYPE, FEATURE, EQU_ID, DATE)
 
 
     # get metadata (timestamp)
@@ -174,7 +170,25 @@ def get_content():
     #return str(df_file.index.values)
 
 
-def query_timestamp (TYPE, feature):
+def query_timestamp (TYPE, feature, ChannelName, date):
+    
+    ## InfluxDB Configuration
+    IDB_HOST = '192.168.123.240'
+    IDB_PORT = 8086
+    IDB_DBNAME = '3243ffc7-76ab-4c5f-a248-ad1ccd68849e'
+    IDB_USER = '9f5b4165-abce-4be7-92f6-20126ad3130b'
+    IDB_PASSWORD = 'RoKZUtYYOK45cqEmhn6k1XniY'
+    
+    ## Query InfluxDB
+    measurement, data = read_influxdb_data(host = IDB_HOST,
+                                       port = IDB_PORT,
+                                       dbname = IDB_DBNAME,
+                                       ChannelName = ChannelName,
+                                       time_start = '2019-02-25',
+                                       time_end = '2019-02-26',
+                                       user = IDB_USER,
+                                       password = IDB_PASSWORD
+                                      )
 
     if TYPE == 'max':
         max_value = data[feature].max()
@@ -183,6 +197,7 @@ def query_timestamp (TYPE, feature):
     else:
         max_value = data[feature].min()
 
+    ## Retrive timestamp
     index_series = data[feature]
     dt64 = index_series[index_series == max_value].index.values[0]
     TS = datetime.datetime.utcfromtimestamp(dt64.tolist()/1e9)
@@ -220,6 +235,63 @@ def convert_bin (filename, DISPLAYPOINT):
 
 def hexint(b,bReverse=True): 
     return int(binascii.hexlify(b[::-1]), 16) if bReverse else int(binascii.hexlify(b), 16)
+
+def read_influxdb_data(host='192.168.123.245', 
+                       port=8086, 
+                       dbname = 'c9377a95-82f3-4af3-ac14-40d14f6d2abe', 
+                       ChannelName='1Y520210100', 
+                       time_start='', 
+                       time_end='', 
+                       user = 'a1555b8e-6148-4ef0-af5b-c2195ac4ecd7', 
+                       password = 'ENbC4hwn1OedsIH6yvO8X4EqJ',
+                       keyword=''):
+    
+    #Example: read_influxdb_data(ChannelName='1Y520210200')
+    #Example: read_influxdb_data(ChannelName='1Y520210200',time_start='2018-05-28',time_end='2018-05-29')
+    client = DataFrameClient(host, port, user, password, dbname)
+    measurements = client.get_list_measurements()
+    
+    if keyword is None: keyword = ''
+        
+    if keyword=='':
+        measurement = [mea.get(u'name') for mea in measurements if mea.get(u'name').find(ChannelName)>=0]
+    else:
+        measurement = [mea.get(u'name') for mea in measurements if mea.get(u'name').find(ChannelName)>=0 and mea.get(u'name').find(keyword)>=0]
+    
+    if len(measurement)==0: 
+        print('No data retrieved.')
+        return None
+    
+    measurement = measurement[-1]
+    
+    time_end = 'now()' if time_end=='' else "'" + time_end + ' 15:59:00' + "'"
+    print(time_end)
+    
+    time_start = 'now()' if time_start=='' else "'" + time_start + ' 16:00:00' + "'"
+    print(time_start)
+    
+    querystr = 'select * from "{}" where time > {} and time < {}'.format(measurement,time_start,time_end)
+    print(querystr)
+    
+    df = client.query(querystr).get(measurement)
+    client.close()
+    
+    if df is None: 
+        print('No data retrieved.')
+        return None    
+    
+    dff = df.groupby('id')
+    columns = [name for name, group in dff]
+    groups = [group['val'] for name, group in dff]
+    
+    #check datatime alginment: all([all(groups[i].index==groups[0].index) for i in range(1,len(groups))])
+    result = pd.concat(groups,axis=1)
+    result.columns = columns
+    result.index = groups[0].index
+    
+    print('data between {} and {} are retrieved, dimension: {}x{}'.format(time_start,time_end,result.shape[0],result.shape[1]))
+    
+    return measurement, result
 
  __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)
