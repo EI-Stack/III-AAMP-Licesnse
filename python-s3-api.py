@@ -347,7 +347,7 @@ def read_influxdb_data(host='192.168.123.245',
     result.columns = columns
     result.index = groups[0].index
     
-    print('data between {} and {} are retrieved, dimension: {}x{}'.format(time_start,time_end,result.shape[0],result.shape[1]))
+    #print('data between {} and {} are retrieved, dimension: {}x{}'.format(time_start,time_end,result.shape[0],result.shape[1]))
     
     return measurement, result
 
