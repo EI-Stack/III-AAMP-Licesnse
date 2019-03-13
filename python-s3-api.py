@@ -16,7 +16,7 @@ import struct
 from flask import Flask
 from flask import request
 from flask import jsonify
-
+from influxdb import DataFrameClient
 
 
 
@@ -293,5 +293,5 @@ def read_influxdb_data(host='192.168.123.245',
     
     return measurement, result
 
- __name__ == '__main__':
+if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)
