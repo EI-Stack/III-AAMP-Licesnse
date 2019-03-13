@@ -142,7 +142,7 @@ def get_content():
     
     
 
-def combine_return (TIME_START, TIME_DELTA, BIN_DF, BIN_LENGTH){
+def combine_return (TIME_START, TIME_DELTA, BIN_DF, BIN_LENGTH)
     
     # load 'data' and 'index' in bin file, and append it into a list
     # follow data format from Grafana: https://github.com/grafana/simple-json-datasource/blob/master/README.md
@@ -161,7 +161,6 @@ def combine_return (TIME_START, TIME_DELTA, BIN_DF, BIN_LENGTH){
     jsonarr = json.dumps([dict_data_mean])
     
     return str(jsonarr)
-}
     
 
 def query_timestamp (TYPE, feature, ChannelName, date):
