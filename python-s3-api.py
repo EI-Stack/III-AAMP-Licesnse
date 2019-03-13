@@ -62,40 +62,22 @@ def get_content():
     print('EQU_ID='+EQU_ID)
     TS = query_timestamp(TYPE, FEATURE, EQU_ID, DATE)
     print(type(TS), TS)
-    ## TODO Retrive bin file
 
-    # load value of key for access blob container (bucket)
-    ACCESS_KEY = 'cc0b4b06affd4f599dff7607f1556811'
-    SECRET_KEY = 'U7fxYmr8idml083N8zo7JRddXiNbyCmNN'
-    HOST = '192.168.123.226'
-    PORT = 8080
-    BUCKET_NAME = 'FOMOS-Y5'
-    FILE_NAME = 'Raw Data-1-1Y510110100-06-29-06_8192.bin'
+
+    FILE_NAME = 'Raw Data-1-'+EQU_ID+'-06-29-06_8192.bin'
     #ID_MACHINE = 'smartbox11 Signal Data'
     #ID_TAG = '1Y510110100'
     #S3_PATH = '2018/11/18'
 
 
-
-
-    # establish connection between blob storage and this client app
-    s3_connection = boto.connect_s3(
-                   aws_access_key_id = ACCESS_KEY,
-                   aws_secret_access_key = SECRET_KEY,
-                   host = HOST,
-                   port = PORT,
-                   is_secure=False,               # uncomment if you are not using ssl
-                   calling_format = boto.s3.connection.OrdinaryCallingFormat(),
-                 )
-    bucket = s3_connection.get_bucket(BUCKET_NAME, validate=False)
-    
-    MACHINE_ID = query_smb(bucket, EQU_ID)
+    S3_BUCKET = get_s3_bucket()
+    MACHINE_ID = query_smb (S3_BUCKET, EQU_ID)
 
     # goto bucket and get file accroding to the file name
     PATH_DEST = MACHINE_ID + '/' + EQU_ID + '/' + TS.strftime('%Y/%m/%d') + '/'
     s3_bin_data = os.path.join(PATH_DEST, FILE_NAME)
     print(s3_bin_data)
-    key = bucket.get_key(s3_bin_data)
+    key = S3_BUCKET.get_key(s3_bin_data)
 
     try:
         key.get_contents_to_filename(FILE_NAME)
@@ -142,7 +124,29 @@ def get_content():
     return RETURN
     #return str(df_file.index.values)
     
+ 
+
+def get_s3_bucket ():
+    # load value of key for access blob container (bucket)
+    ACCESS_KEY = 'cc0b4b06affd4f599dff7607f1556811'
+    SECRET_KEY = 'U7fxYmr8idml083N8zo7JRddXiNbyCmNN'
+    HOST = '192.168.123.226'
+    PORT = 8080
+    BUCKET_NAME = 'FOMOS-Y5'
     
+    # establish connection between blob storage and this client app
+    s3_connection = boto.connect_s3(
+                   aws_access_key_id = ACCESS_KEY,
+                   aws_secret_access_key = SECRET_KEY,
+                   host = HOST,
+                   port = PORT,
+                   is_secure=False,               # uncomment if you are not using ssl
+                   calling_format = boto.s3.connection.OrdinaryCallingFormat(),
+                 )
+    bucket = s3_connection.get_bucket(BUCKET_NAME, validate=False)
+    
+    return bucket
+
 def query_smb (bucket, EQU_ID):
     
     # load folder and sub folder from bucket into a dataframe
