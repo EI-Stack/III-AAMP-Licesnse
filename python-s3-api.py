@@ -152,7 +152,7 @@ def query_smb (bucket, EQU_ID):
             smb_df = smb_df.append(pd.Series(subfolder.name.split('/'), 
                                              index=['smb_number', 'EQU_ID', 'n']), ignore_index=True)
 
-    machine_id = smb_df[smb_df['EQU_ID']=='EQU_ID]['smb_number'].values[0]
+    machine_id = smb_df[smb_df['EQU_ID']==EQU_ID]['smb_number'].values[0]
     return machine_id
 
 def combine_return (TIME_START, TIME_DELTA, BIN_DF, BIN_LENGTH):
