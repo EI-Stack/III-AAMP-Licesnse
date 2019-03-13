@@ -69,10 +69,16 @@ def get_content():
     FILE_NAME = 'Raw Data-1-1Y510110100-06-29-06_8192.bin'
     ID_MACHINE = 'smartbox11 Signal Data'
     ID_TAG = '1Y510110100'
-    #S3_PATH = jsonobj['date']
     S3_PATH = '2018/11/18'
     SAMPLE_RATE = 8192
     DISPLAY_POINT = 65536
+
+    ## InfluxDB Configuration
+    IDB_HOST = '192.168.123.240'
+    IDB_PORT = 8086
+    IDB_DBNAME = '3243ffc7-76ab-4c5f-a248-ad1ccd68849e'
+    IDB_USER = '9f5b4165-abce-4be7-92f6-20126ad3130b'
+    IDB_PASSWORD = 'RoKZUtYYOK45cqEmhn6k1XniY'
 
 
     # establish connection between blob storage and this client app
@@ -96,6 +102,9 @@ def get_content():
         key.get_contents_to_filename(FILE_NAME)
     except:
         return 'File not found'
+
+    query_timestamp(TYPE, FEATURE)
+
 
     # get metadata (timestamp)
     #bucket = s3_connection.get_bucket(BUCKET_NAME, validate=False)
@@ -165,6 +174,26 @@ def get_content():
     #return str(df_file.index.values)
 
 
+def query_timestamp (TYPE, feature):
+
+    if TYPE == 'max':
+        max_value = data[feature].max()
+    elif TYPE == 'mean':
+        max_value = data[feature].mean()
+    else:
+        max_value = data[feature].min()
+
+    index_series = data[feature]
+    dt64 = index_series[index_series == max_value].index.values[0]
+    TS = datetime.datetime.utcfromtimestamp(dt64.tolist()/1e9)
+
+    return TS
+
+
+def convert_equ_name (EQU_NAME):
+    return EQU_ID
+
+
 #def convert_bin (filename, pd_type, DISPLAY_POINT):
 def convert_bin (filename, DISPLAYPOINT):
     bytes_read = open(filename, "rb").read()
@@ -192,6 +221,5 @@ def convert_bin (filename, DISPLAYPOINT):
 def hexint(b,bReverse=True): 
     return int(binascii.hexlify(b[::-1]), 16) if bReverse else int(binascii.hexlify(b), 16)
 
-
-if __name__ == '__main__':
+ __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)
