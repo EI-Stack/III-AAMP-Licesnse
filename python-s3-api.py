@@ -206,6 +206,59 @@ def query_timestamp (TYPE, feature, ChannelName, date):
 
 
 def convert_equ_name (EQU_NAME):
+    
+    WISE_PAAS_INSTANCE = 'fomos.csc.com.tw'
+    ENDPOINT_SSO = 'portal-sso'
+    ENDPOINT_APM = 'api-apm-csc-srp'
+
+    payload = dict()
+    payload['username'] = 'william.cheng@advantech.com.tw'
+    payload['password'] = 'Tzukai3038!'
+
+    resp_sso = requests.post('https://' + ENDPOINT_SSO + '.' + WISE_PAAS_INSTANCE + '/v2.0/auth/native', 
+                     json=payload,
+                     verify=False)
+
+    header = dict()
+    header['content-type'] = 'application/json'
+    header['Authorization'] = 'Bearer ' + resp_sso.json()['accessToken']
+    
+    
+    
+    APM_NODEID = 'https://' + ENDPOINT_APM + '.' + WISE_PAAS_INSTANCE + '/topo/progeny/node'
+
+    param = dict()
+    param['topoName'] = 'MAIN_CSC'
+    param['path'] = '/'
+    param['type'] = 'layer'
+    param['layerName'] = 'Machine'
+
+    resp_apm_nodeid = requests.get(APM_NODEID, 
+                     params=param,
+                     headers=header,
+                     verify=False)
+
+    resp_apm_nodeid_json = resp_apm_nodeid.json()
+    node_id_df = pd.DataFrame(resp_apm_nodeid_json)
+    node_id_df = node_id_df[['id', 'name']]
+
+    apm_nodeid = int(node_id_df.loc[node_id_df['name'] == EQU_NAME]['id'])
+    
+    APM_TOPO_INFO = 'https://' + ENDPOINT_APM + '.' + WISE_PAAS_INSTANCE + '/topo/node/detail/info'
+
+    param = dict()
+    param['id'] = apm_nodeid
+
+    resp_apm_feature = requests.get(APM_TOPO_INFO, 
+                     params=param,
+                     headers=header,
+                     verify=False)
+
+    resp_tag = resp_apm_feature.json()['dtInstance']['feature']['monitor']
+    feature_list = pd.DataFrame(resp_tag)['tag'].str.split('@', expand=True)[2].sort_values()
+    EQU_ID = str(resp_apm_feature.json()['dtInstance']['property']['iotSense']['deviceId']).split('@')[2]
+
+    
     return EQU_ID
 
 
