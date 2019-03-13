@@ -41,26 +41,22 @@ def get_content():
 
     # retrieve post JSON object
     jsonobj = request.get_json(silent=True)
-    jsonobj = json.dumps(jsonobj['targets'][0]['target'])
-    jsonobj = jsonobj.replace("\"", "")
-    #jsonobj = jsonobj.replace("'", "\"")
-    #jsonobj = json.loads(jsonobj)
+    jsonobj = jsonobj['targets'][0]['target']
 
     EQU_NAME = jsonobj.split('@')[0]
     FEATURE = jsonobj.split('@')[1]
     TYPE = jsonobj.split('@')[2]
 
-
     print('EQU_NAME=' + EQU_NAME)
-    print(FEATURE)
-    print(TYPE)
+    print('Feature=' + FEATURE)
+    print('Type=' + TYPE)
 
     jsonobj = request.get_json(silent=True)
     jsonobj = json.dumps(jsonobj['range']['from'])
     jsonobj = jsonobj.split('T')[0]
     jsonobj = jsonobj.replace("\"", "")
     DATE = jsonobj.replace("-", "/")
-    print(DATE)
+    print('Date=' + DATE)
 
     # load value of key for access blob container (bucket)
     ACCESS_KEY = 'cc0b4b06affd4f599dff7607f1556811'
@@ -100,9 +96,8 @@ def get_content():
         return 'File not found'
 
 
-    print(EQU_NAME)
     EQU_ID = convert_equ_name(EQU_NAME)
-    print(EQU_ID)
+    print('EQU_ID='+EQU_ID)
     TS = query_timestamp(TYPE, FEATURE, EQU_ID, DATE)
     print(TS)
     ## TODO Retrive bin file
@@ -251,9 +246,6 @@ def convert_equ_name (EQU_NAME):
     resp_apm_nodeid_json = resp_apm_nodeid.json()
     node_id_df = pd.DataFrame(resp_apm_nodeid_json)
     node_id_df = node_id_df[['id', 'name']]
-
-    print(node_id_df)
-
 
     apm_nodeid = int(node_id_df.loc[node_id_df['name'] == EQU_NAME]['id'])
     
