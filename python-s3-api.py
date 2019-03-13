@@ -71,7 +71,7 @@ def get_content():
     PORT = 8080
     BUCKET_NAME = 'FOMOS-Y5'
     FILE_NAME = 'Raw Data-1-1Y510110100-06-29-06_8192.bin'
-    ID_MACHINE = 'smartbox11 Signal Data'
+    #ID_MACHINE = 'smartbox11 Signal Data'
     #ID_TAG = '1Y510110100'
     #S3_PATH = '2018/11/18'
 
@@ -88,9 +88,11 @@ def get_content():
                    calling_format = boto.s3.connection.OrdinaryCallingFormat(),
                  )
     bucket = s3_connection.get_bucket(BUCKET_NAME, validate=False)
+    
+    MACHINE_ID = query_smb(bucket, EQU_ID)
 
     # goto bucket and get file accroding to the file name
-    PATH_DEST = ID_MACHINE + '/' + EQU_ID + '/' + TS.strftime('%Y/%m/%d') + '/'
+    PATH_DEST = MACHINE_ID + '/' + EQU_ID + '/' + TS.strftime('%Y/%m/%d') + '/'
     s3_bin_data = os.path.join(PATH_DEST, FILE_NAME)
     print(s3_bin_data)
     key = bucket.get_key(s3_bin_data)
@@ -141,6 +143,16 @@ def get_content():
     #return str(df_file.index.values)
     
     
+def query_smb (bucket, EQU_ID):
+    
+    # load folder and sub folder from bucket into a dataframe
+    smb_df = pd.DataFrame(columns=['smb_number', 'EQU_ID', 'n'])
+    for folder in bucket.list(delimiter='/'):
+        for subfolder in bucket.list(delimiter='/', prefix=folder.name):
+            smb_df = smb_df.append(pd.Series(subfolder.name.split('/'), 
+                                             index=['smb_number', 'EQU_ID', 'n']), ignore_index=True)
+
+    return smb_df[smb_df['EQU_ID']=='EQU_ID]['smb_number'].values[0]
 
 def combine_return (TIME_START, TIME_DELTA, BIN_DF, BIN_LENGTH):
     
