@@ -64,7 +64,7 @@ def get_content():
     print(type(TS), TS)
 
 
-    FILE_NAME = 'Raw Data-1-'+EQU_ID+'-06-29-06_8192.bin'
+    #FILE_NAME = 'Raw Data-1-'+EQU_ID+'-06-29-06_8192.bin'
     #ID_MACHINE = 'smartbox11 Signal Data'
     #ID_TAG = '1Y510110100'
     #S3_PATH = '2018/11/18'
@@ -72,9 +72,11 @@ def get_content():
 
     S3_BUCKET = get_s3_bucket()
     MACHINE_ID = query_smb (S3_BUCKET, EQU_ID)
+    PATH_DEST = MACHINE_ID + '/' + EQU_ID + '/' + str(TS.year) + '/' + str(TS.month) + '/' + str(TS.day) + '/'
+    FILE_NAME = query_file (TS, S3_BUCKET, PATH_DEST)
 
     # goto bucket and get file accroding to the file name
-    PATH_DEST = MACHINE_ID + '/' + EQU_ID + '/' + TS.strftime('%Y/%m/%d') + '/'
+    #PATH_DEST = MACHINE_ID + '/' + EQU_ID + '/' + TS.strftime('%Y/%m/%d') + '/'
     s3_bin_data = os.path.join(PATH_DEST, FILE_NAME)
     print(s3_bin_data)
     key = S3_BUCKET.get_key(s3_bin_data)
@@ -125,6 +127,20 @@ def get_content():
     #return str(df_file.index.values)
     
  
+def query_file (TS, bucket, PATH_DEST):
+    
+    ts_df = pd.DataFrame(columns=['hours', 'minutes'])
+    filename_df = pd.DataFrame(columns=['filename'])
+    for key in bucket.list(prefix=PATH_DEST): 
+        ts_df = ts_df.append(pd.Series(key.name.split('-')[3:5], index=['hours', 'minutes']), ignore_index=True)
+        filename_df = filename_df.append(pd.Series(key.name.split('/')[-1], index=['filename']), ignore_index=True)
+
+    ts_df = pd.concat([ts_df, filename_df], axis=1, join_axes=[filename_df.index])
+    
+    ts_hour_df = ts_df.loc[(ts_df['hours'] == TS.strftime('%H')) ]
+    ts_df = ts_hour_df.loc[abs(ts_hour_df['minutes'].astype('int') - TS.minute)<=5 ].head(1)
+    
+    return ts_df['filename'].values[0]
 
 def get_s3_bucket ():
     # load value of key for access blob container (bucket)
