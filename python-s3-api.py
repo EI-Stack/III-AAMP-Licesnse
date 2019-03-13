@@ -38,25 +38,32 @@ def test_1():
 #@app.route('/blob/api/v1.0/get_content', methods=['POST'])
 @app.route('/query', methods=['POST'])
 def get_content():
-
+    
+    SAMPLE_RATE = 8192
+    DISPLAY_POINT = 65536
+    
     # retrieve post JSON object
     jsonobj = request.get_json(silent=True)
-    jsonobj = jsonobj['targets'][0]['target']
+    target_obj = jsonobj['targets'][0]['target']
+    date_obj = jsonobj['range']['from']
+    date_obj = date_obj.split('T')[0]
 
-    EQU_NAME = jsonobj.split('@')[0]
-    FEATURE = jsonobj.split('@')[1]
-    TYPE = jsonobj.split('@')[2]
+    EQU_NAME = target_obj.split('@')[0]
+    FEATURE = target_obj.split('@')[1]
+    TYPE = target_obj.split('@')[2]
+    DATE = date_obj.replace("-", "/")
 
     print('EQU_NAME=' + EQU_NAME)
     print('Feature=' + FEATURE)
     print('Type=' + TYPE)
-
-    jsonobj = request.get_json(silent=True)
-    jsonobj = json.dumps(jsonobj['range']['from'])
-    jsonobj = jsonobj.split('T')[0]
-    jsonobj = jsonobj.replace("\"", "")
-    DATE = jsonobj.replace("-", "/")
     print('Date=' + DATE)
+
+    #jsonobj = request.get_json(silent=True)
+    #jsonobj = json.dumps(jsonobj['range']['from'])
+    #jsonobj = jsonobj.split('T')[0]
+    #jsonobj = jsonobj.replace("\"", "")
+    #DATE = jsonobj.replace("-", "/")
+    #print('Date=' + DATE)
 
     # load value of key for access blob container (bucket)
     ACCESS_KEY = 'cc0b4b06affd4f599dff7607f1556811'
@@ -68,8 +75,7 @@ def get_content():
     ID_MACHINE = 'smartbox11 Signal Data'
     ID_TAG = '1Y510110100'
     S3_PATH = '2018/11/18'
-    SAMPLE_RATE = 8192
-    DISPLAY_POINT = 65536
+
 
 
 
