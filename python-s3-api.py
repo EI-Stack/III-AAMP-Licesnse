@@ -110,6 +110,7 @@ def get_content():
     #time = time_list[3] + ':' + time_list[3] + ':' + time_list[5].split("_")[0]
     #key_timestamp = date + ' ' + time
 
+    # TODO: Fix Time_Start from TS, check TS result
     #TIME_START = int(datetime.datetime.strptime(key_timestamp, '%Y-%m-%d %H:%M:%S').strftime('%s')) * 1000
     TIME_START = int(datetime.datetime.strptime(DATE, '%Y/%m/%d').strftime('%s')) * 1000
     TIME_DELTA = float(float(BIN_LENGTH / SAMPLE_RATE) / DISPLAY_POINT) * 1000
