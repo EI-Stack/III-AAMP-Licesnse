@@ -112,7 +112,7 @@ def get_content():
 
     #TIME_START = int(datetime.datetime.strptime(key_timestamp, '%Y-%m-%d %H:%M:%S').strftime('%s')) * 1000
     TIME_START = int(datetime.datetime.strptime(DATE, '%Y/%m/%d').strftime('%s')) * 1000
-    TIME_DELTA = float(float(file_length / SAMPLE_RATE) / DISPLAY_POINT) * 1000
+    TIME_DELTA = float(float(BIN_LENGTH / SAMPLE_RATE) / DISPLAY_POINT) * 1000
     #TIME_DELTA = 0.1220703125
     print ('TIME_START', TIME_START)
 
