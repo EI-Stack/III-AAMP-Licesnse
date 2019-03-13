@@ -118,11 +118,11 @@ def get_content():
     # calculate start-time and end-time
     #TIME_START = datetime.datetime.fromtimestampint(int(key_timestamp)).strftime('%Y-%m-%d %H:%M:%S')
 
-    date_list = s3_bin_data.split("/")
-    date = date_list[2] + '-' + date_list[3] + '-' + date_list[4]
-    time_list = s3_bin_data.split("/")[5].split("-")
-    time = time_list[3] + ':' + time_list[3] + ':' + time_list[5].split("_")[0]
-    key_timestamp = date + ' ' + time
+    #date_list = s3_bin_data.split("/")
+    #date = date_list[2] + '-' + date_list[3] + '-' + date_list[4]
+    #time_list = s3_bin_data.split("/")[5].split("-")
+    #time = time_list[3] + ':' + time_list[3] + ':' + time_list[5].split("_")[0]
+    #key_timestamp = date + ' ' + time
 
     #TIME_START = int(datetime.datetime.strptime(key_timestamp, '%Y-%m-%d %H:%M:%S').strftime('%s')) * 1000
     TIME_START = int(datetime.datetime.strptime(DATE, '%Y/%m/%d').strftime('%s')) * 1000
@@ -142,7 +142,7 @@ def get_content():
     
     
 
-def combine_return (TIME_START, TIME_DELTA, BIN_DF, BIN_LENGTH)
+def combine_return (TIME_START, TIME_DELTA, BIN_DF, BIN_LENGTH):
     
     # load 'data' and 'index' in bin file, and append it into a list
     # follow data format from Grafana: https://github.com/grafana/simple-json-datasource/blob/master/README.md
