@@ -1,5 +1,4 @@
 
-
 import boto
 import boto.s3.connection
 from boto.s3.key import Key
@@ -13,12 +12,12 @@ import datetime
 import binascii
 import struct
 
+import requests
+
 from flask import Flask
 from flask import request
 from flask import jsonify
 from influxdb import DataFrameClient
-
-
 
 app = Flask(__name__)
 
@@ -49,7 +48,7 @@ def get_content():
     FEATURE = jsonobj.split('@')[1]
     TYPE = jsonobj.split('@')[2]
 
-    print(EQU_NAME)
+    print('EQU_NAME=' + EQU_NAME)
     print(FEATURE)
     print(TYPE)
 
@@ -97,10 +96,13 @@ def get_content():
     except:
         return 'File not found'
 
-    #TODO, query EQU_ID
-    EQU_ID = '1Y520220100'
-    query_timestamp(TYPE, FEATURE, EQU_ID, DATE)
 
+    print(EQU_NAME)
+    EQU_ID = convert_equ_name(EQU_NAME)
+    print(EQU_ID)
+    TS = query_timestamp(TYPE, FEATURE, EQU_ID, DATE)
+    print(TS)
+    ## TODO Retrive bin file
 
     # get metadata (timestamp)
     #bucket = s3_connection.get_bucket(BUCKET_NAME, validate=False)
@@ -178,7 +180,8 @@ def query_timestamp (TYPE, feature, ChannelName, date):
     IDB_DBNAME = '3243ffc7-76ab-4c5f-a248-ad1ccd68849e'
     IDB_USER = '9f5b4165-abce-4be7-92f6-20126ad3130b'
     IDB_PASSWORD = 'RoKZUtYYOK45cqEmhn6k1XniY'
-    
+
+    #TODO Calculate from-to datetime
     ## Query InfluxDB
     measurement, data = read_influxdb_data(host = IDB_HOST,
                                        port = IDB_PORT,
@@ -207,6 +210,7 @@ def query_timestamp (TYPE, feature, ChannelName, date):
 
 def convert_equ_name (EQU_NAME):
     
+    ## Connection Information
     WISE_PAAS_INSTANCE = 'fomos.csc.com.tw'
     ENDPOINT_SSO = 'portal-sso'
     ENDPOINT_APM = 'api-apm-csc-srp'
@@ -215,6 +219,8 @@ def convert_equ_name (EQU_NAME):
     payload['username'] = 'william.cheng@advantech.com.tw'
     payload['password'] = 'Tzukai3038!'
 
+
+    ## Get Token through SSO Login
     resp_sso = requests.post('https://' + ENDPOINT_SSO + '.' + WISE_PAAS_INSTANCE + '/v2.0/auth/native', 
                      json=payload,
                      verify=False)
@@ -222,9 +228,9 @@ def convert_equ_name (EQU_NAME):
     header = dict()
     header['content-type'] = 'application/json'
     header['Authorization'] = 'Bearer ' + resp_sso.json()['accessToken']
-    
-    
-    
+
+
+    ## Get NodeID by EQU_NAME
     APM_NODEID = 'https://' + ENDPOINT_APM + '.' + WISE_PAAS_INSTANCE + '/topo/progeny/node'
 
     param = dict()
@@ -238,12 +244,18 @@ def convert_equ_name (EQU_NAME):
                      headers=header,
                      verify=False)
 
+    ## Retrive NodeID
     resp_apm_nodeid_json = resp_apm_nodeid.json()
     node_id_df = pd.DataFrame(resp_apm_nodeid_json)
     node_id_df = node_id_df[['id', 'name']]
 
+    print(node_id_df)
+
+
     apm_nodeid = int(node_id_df.loc[node_id_df['name'] == EQU_NAME]['id'])
     
+
+    ## Get EQU_ID by NodeID
     APM_TOPO_INFO = 'https://' + ENDPOINT_APM + '.' + WISE_PAAS_INSTANCE + '/topo/node/detail/info'
 
     param = dict()
@@ -254,12 +266,17 @@ def convert_equ_name (EQU_NAME):
                      headers=header,
                      verify=False)
 
+    ## Retrive EQU_ID
     resp_tag = resp_apm_feature.json()['dtInstance']['feature']['monitor']
     feature_list = pd.DataFrame(resp_tag)['tag'].str.split('@', expand=True)[2].sort_values()
     EQU_ID = str(resp_apm_feature.json()['dtInstance']['property']['iotSense']['deviceId']).split('@')[2]
 
-    
     return EQU_ID
+
+
+def get_bin ():
+    return bin_df
+
 
 
 #def convert_bin (filename, pd_type, DISPLAY_POINT):
