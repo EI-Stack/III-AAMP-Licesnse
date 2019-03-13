@@ -1,4 +1,6 @@
 
+# -*- coding: utf-8 -*-
+
 import boto
 import boto.s3.connection
 from boto.s3.key import Key
@@ -47,6 +49,7 @@ def get_content():
     EQU_NAME = jsonobj.split('@')[0]
     FEATURE = jsonobj.split('@')[1]
     TYPE = jsonobj.split('@')[2]
+
 
     print('EQU_NAME=' + EQU_NAME)
     print(FEATURE)
