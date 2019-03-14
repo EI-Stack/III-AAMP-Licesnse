@@ -208,7 +208,7 @@ def query_timestamp (TYPE, feature, ChannelName, date):
 
     
     time_start = date.replace("-", "/")
-    time_end = datetime.strptime(date, '%Y-%m-%d') + timedelta(days=1)
+    time_end = datetime.datetime.strptime(date, '%Y-%m-%d') + timedelta(days=1)
     print('time_end', type(time_end), time_end)
     #TODO Calculate from-to datetime
     ## Query InfluxDB
