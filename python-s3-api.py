@@ -116,6 +116,7 @@ def get_content():
     TIME_DELTA = float(float(BIN_LENGTH / SAMPLE_RATE) / DISPLAY_POINT) * 1000
     #TIME_DELTA = 0.1220703125
     print ('TIME_START', TIME_START)
+    print ('TIME_START', TS.timestamp())
 
     # deTIME_DELTAfile which stored in local
     os.remove(FILE_NAME)
@@ -208,7 +209,9 @@ def query_timestamp (TYPE, feature, ChannelName, date):
 
     
     time_start = date.replace("-", "/")
-    time_end = datetime.datetime.strptime(date, '%Y-%m-%d') + timedelta(days=1)
+    time_end = datetime.datetime.strptime(date, '%Y/%m/%d') + timedelta(days=1)
+    print('time_end', type(time_end), time_end)
+    time_end = time_end.strftime("Y/%m/%d")
     print('time_end', type(time_end), time_end)
     #TODO Calculate from-to datetime
     ## Query InfluxDB
@@ -217,7 +220,7 @@ def query_timestamp (TYPE, feature, ChannelName, date):
                                        dbname = IDB_DBNAME,
                                        ChannelName = ChannelName,
                                        time_start = time_start,
-                                       time_end = '2019-02-26',
+                                       time_end = time_end,
                                        user = IDB_USER,
                                        password = IDB_PASSWORD
                                       )
