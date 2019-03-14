@@ -61,7 +61,7 @@ def get_content():
     EQU_ID = convert_equ_name(EQU_NAME)
     print('EQU_ID='+EQU_ID)
     TS = query_timestamp(TYPE, FEATURE, EQU_ID, DATE)
-    print(type(TS), TS)
+    print(type(TS), TS, TS.timestamp())
 
 
     #FILE_NAME = 'Raw Data-1-'+EQU_ID+'-06-29-06_8192.bin'
