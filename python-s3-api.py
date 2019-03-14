@@ -206,13 +206,17 @@ def query_timestamp (TYPE, feature, ChannelName, date):
     IDB_USER = '9f5b4165-abce-4be7-92f6-20126ad3130b'
     IDB_PASSWORD = 'RoKZUtYYOK45cqEmhn6k1XniY'
 
+    
+    time_start = date.replace("-", "/")
+    time_end = datetime.strptime(date, '%Y-%m-%d') + timedelta(days=1)
+    print('time_end', type(time_end), time_end)
     #TODO Calculate from-to datetime
     ## Query InfluxDB
     measurement, data = read_influxdb_data(host = IDB_HOST,
                                        port = IDB_PORT,
                                        dbname = IDB_DBNAME,
                                        ChannelName = ChannelName,
-                                       time_start = '2019-02-25',
+                                       time_start = time_start,
                                        time_end = '2019-02-26',
                                        user = IDB_USER,
                                        password = IDB_PASSWORD
@@ -296,11 +300,6 @@ def convert_equ_name (EQU_NAME):
     return EQU_ID
 
 
-def get_bin ():
-    return bin_df
-
-
-
 #def convert_bin (filename, pd_type, DISPLAY_POINT):
 def convert_bin (filename, DISPLAYPOINT):
     bytes_read = open(filename, "rb").read()
@@ -357,10 +356,10 @@ def read_influxdb_data(host='192.168.123.245',
     measurement = measurement[-1]
     
     time_end = 'now()' if time_end=='' else "'" + time_end + ' 15:59:00' + "'"
-    #print(time_end)
+    print(time_end)
     
     time_start = 'now()' if time_start=='' else "'" + time_start + ' 16:00:00' + "'"
-    #print(time_start)
+    print(time_start)
     
     querystr = 'select * from "{}" where time > {} and time < {}'.format(measurement,time_start,time_end)
     #print(querystr)
