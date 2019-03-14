@@ -56,78 +56,44 @@ def get_content():
     print('EQU_NAME=' + EQU_NAME)
     print('Feature=' + FEATURE)
     print('Type=' + TYPE)
-    print('Date=' + DATE)
+    print('Query Date=' + DATE)
     
     EQU_ID = convert_equ_name(EQU_NAME)
-    print('EQU_ID='+EQU_ID)
     TS = query_timestamp(TYPE, FEATURE, EQU_ID, DATE)
-    print(type(TS), TS, TS.timestamp())
+    print('EQU_ID='+EQU_ID)
+    print('Feature assorcated timestamp in Query Date=', TS)
 
-
-    #FILE_NAME = 'Raw Data-1-'+EQU_ID+'-06-29-06_8192.bin'
-    #ID_MACHINE = 'smartbox11 Signal Data'
-    #ID_TAG = '1Y510110100'
-    #S3_PATH = '2018/11/18'
-
-
+    # establish connection to s3 and search bin file that the mostest close to query date
     S3_BUCKET = get_s3_bucket()
     MACHINE_ID = query_smb (S3_BUCKET, EQU_ID)
     PATH_DEST = MACHINE_ID + '/' + EQU_ID + '/' + str(TS.year) + '/' + str(TS.month) + '/' + str(TS.day) + '/'
     FILE_NAME = query_file (TS, S3_BUCKET, PATH_DEST)
 
     # goto bucket and get file accroding to the file name
-    #PATH_DEST = MACHINE_ID + '/' + EQU_ID + '/' + TS.strftime('%Y/%m/%d') + '/'
     s3_bin_data = os.path.join(PATH_DEST, FILE_NAME)
-    print(s3_bin_data)
     key = S3_BUCKET.get_key(s3_bin_data)
+    print('Bin file that the most closest to timestamp in Query Date='+s3_bin_data)
 
+    # download content for convert bin to plantext
     try:
         key.get_contents_to_filename(FILE_NAME)
     except:
         return 'File not found'
 
-
-    # get metadata (timestamp)
-    #bucket = s3_connection.get_bucket(BUCKET_NAME, validate=False)
-    #key = Key(bucket)
-    #remote_key = bucket.get_key(s3_bin_data)
-    #key_timestamp = remote_key.metadata
-    #key_timestamp = key_timestamp['ts']
-    #print('timestamp = ' + key_timestamp['ts'])
-    
-    # read bin file and translate it to JSON formate
-    #df_file_mean, file_length = convert_bin(FILE_NAME, 'mean', DISPLAY_POINT)
-    #df_file_max, file_length = convert_bin(FILE_NAME, 'max', DISPLAY_POINT)
-    #df_file_min, file_length = convert_bin(FILE_NAME, 'min', DISPLAY_POINT)
     BIN_DF, BIN_LENGTH = convert_bin(FILE_NAME, DISPLAY_POINT)
 
-    # calculate start-time and end-time
-    #TIME_START = datetime.datetime.fromtimestampint(int(key_timestamp)).strftime('%Y-%m-%d %H:%M:%S')
-
-    #date_list = s3_bin_data.split("/")
-    #date = date_list[2] + '-' + date_list[3] + '-' + date_list[4]
-    #time_list = s3_bin_data.split("/")[5].split("-")
-    #time = time_list[3] + ':' + time_list[3] + ':' + time_list[5].split("_")[0]
-    #key_timestamp = date + ' ' + time
-
-    # TODO: Fix Time_Start from TS, check TS result
-    #TIME_START = int(datetime.datetime.strptime(key_timestamp, '%Y-%m-%d %H:%M:%S').strftime('%s')) * 1000
-    #TIME_START = int(datetime.datetime.strptime(DATE, '%Y/%m/%d').strftime('%s')) * 1000
+    # calculate start-time and end-time for grafana representation
     TIME_START = TS.timestamp() * 1000
     TIME_DELTA = float(float(BIN_LENGTH / SAMPLE_RATE) / DISPLAY_POINT) * 1000
-    #TIME_DELTA = 0.1220703125
-    print ('TIME_START', TIME_START)
-    print ('TIME_START', TS.timestamp())
+    print ('Grafana x-axis TIME_START=', TIME_START)
 
-    # deTIME_DELTAfile which stored in local
+    # delete file which stored in local
     os.remove(FILE_NAME)
 
-
-
+    # combine response json object follow the rule of grafana simpleJSON
     RETURN = combine_return (TIME_START, TIME_DELTA, BIN_DF, BIN_LENGTH)
     
     return RETURN
-    #return str(df_file.index.values)
     
  
 def query_file (TS, bucket, PATH_DEST):
@@ -211,10 +177,10 @@ def query_timestamp (TYPE, feature, ChannelName, time_start):
     
     time_start = time_start.replace("/", "-")
     time_end = datetime.datetime.strptime(time_start, '%Y-%m-%d') + datetime.timedelta(days=1)
-    print('time_end', type(time_end), time_end)
+    #print('time_end', type(time_end), time_end)
     time_end = time_end.strftime("%Y-%m-%d")
-    print('time_end', type(time_end), time_end)
-    #TODO Calculate from-to datetime
+    #print('time_end', type(time_end), time_end)
+
     ## Query InfluxDB
     measurement, data = read_influxdb_data(host = IDB_HOST,
                                        port = IDB_PORT,
@@ -360,10 +326,10 @@ def read_influxdb_data(host='192.168.123.245',
     measurement = measurement[-1]
     
     time_start = 'now()' if time_start=='' else "'" + time_start + ' 00:00:00' + "'"
-    print(time_start)
+    #print(time_start)
     
     time_end = 'now()' if time_end=='' else "'" + time_end + ' 00:00:00' + "'"
-    print(time_end)
+    #print(time_end)
     
     
     querystr = 'select * from "{}" where time > {} and time < {}'.format(measurement,time_start,time_end)
