@@ -198,7 +198,7 @@ def combine_return (TIME_START, TIME_DELTA, BIN_DF, BIN_LENGTH):
     return str(jsonarr)
     
 
-def query_timestamp (TYPE, feature, ChannelName, date):
+def query_timestamp (TYPE, feature, ChannelName, time_start):
     
     ## InfluxDB Configuration
     IDB_HOST = '192.168.123.240'
@@ -208,10 +208,10 @@ def query_timestamp (TYPE, feature, ChannelName, date):
     IDB_PASSWORD = 'RoKZUtYYOK45cqEmhn6k1XniY'
 
     
-    time_start = date.replace("-", "/")
-    time_end = datetime.datetime.strptime(date, '%Y/%m/%d') + datetime.timedelta(days=1)
+    #time_start = date.replace("-", "/")
+    time_end = datetime.datetime.strptime(date, '%Y-%m-%d') + datetime.timedelta(days=1)
     print('time_end', type(time_end), time_end)
-    time_end = time_end.strftime("%Y/%m/%d")
+    time_end = time_end.strftime("%Y-%m-%d")
     print('time_end', type(time_end), time_end)
     #TODO Calculate from-to datetime
     ## Query InfluxDB
@@ -358,11 +358,12 @@ def read_influxdb_data(host='192.168.123.245',
     
     measurement = measurement[-1]
     
+    time_start = 'now()' if time_start=='' else "'" + time_start + ' 00:00:00' + "'"
+    print(time_start)
+    
     time_end = 'now()' if time_end=='' else "'" + time_end + ' 00:00:00' + "'"
     print(time_end)
     
-    time_start = 'now()' if time_start=='' else "'" + time_start + ' 00:00:00' + "'"
-    print(time_start)
     
     querystr = 'select * from "{}" where time > {} and time < {}'.format(measurement,time_start,time_end)
     #print(querystr)
