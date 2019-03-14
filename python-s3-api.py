@@ -208,7 +208,7 @@ def query_timestamp (TYPE, feature, ChannelName, time_start):
     IDB_PASSWORD = 'RoKZUtYYOK45cqEmhn6k1XniY'
 
     
-    #time_start = date.replace("-", "/")
+    time_start = time_start.replace("/", "-")
     time_end = datetime.datetime.strptime(time_start, '%Y-%m-%d') + datetime.timedelta(days=1)
     print('time_end', type(time_end), time_end)
     time_end = time_end.strftime("%Y-%m-%d")
