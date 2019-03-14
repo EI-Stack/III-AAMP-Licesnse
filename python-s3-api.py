@@ -209,7 +209,7 @@ def query_timestamp (TYPE, feature, ChannelName, time_start):
 
     
     #time_start = date.replace("-", "/")
-    time_end = datetime.datetime.strptime(date, '%Y-%m-%d') + datetime.timedelta(days=1)
+    time_end = datetime.datetime.strptime(time_start, '%Y-%m-%d') + datetime.timedelta(days=1)
     print('time_end', type(time_end), time_end)
     time_end = time_end.strftime("%Y-%m-%d")
     print('time_end', type(time_end), time_end)
