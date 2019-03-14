@@ -361,7 +361,7 @@ def read_influxdb_data(host='192.168.123.245',
     time_end = 'now()' if time_end=='' else "'" + time_end + ' 00:00:00' + "'"
     print(time_end)
     
-    time_start = 'now()' if time_start=='' else "'" + time_start + ' 11:59:59' + "'"
+    time_start = 'now()' if time_start=='' else "'" + time_start + ' 00:00:00' + "'"
     print(time_start)
     
     querystr = 'select * from "{}" where time > {} and time < {}'.format(measurement,time_start,time_end)
