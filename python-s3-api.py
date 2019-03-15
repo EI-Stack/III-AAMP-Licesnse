@@ -49,7 +49,7 @@ def get_content():
     date_obj = jsonobj['range']['from']
     #date_obj = date_obj.split('T')[0]
     
-    DATE = datetime.datetime.strptime(date_obj, '%Y-%m-%dT%H:%M:%S.000Z')
+    DATE = datetime.datetime.strptime(date_obj, '%Y-%m-%dT%H:%M:%S.%fZ')
     DATE = DATE + datetime.timedelta(hours=8)
     DATE = DATE.strftime('%Y-%m-%d')
 
