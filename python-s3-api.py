@@ -90,9 +90,9 @@ def get_content():
     SECOND = FILE_NAME.split('-')[5].split('_')[0]
     
     TIME_START = TS.strftime('%Y-%m-%d') + 'T' + HOUR + ':' + MIN + ':' + SECOND
-    TIME_START = datetime.datetime.strptime(TIME_START, '%Y-%m-%dT%H:%M:%S').timestamp()
-    TIME_START = TIME_START * 1000
-    #TIME_START = TS.timestamp() * 1000
+    TIME_START = datetime.datetime.strptime(TIME_START, '%Y-%m-%dT%H:%M:%S')
+    TIME_START = TIME_START - datetime.timedelta(hours=8)
+    TIME_START = TIME_START.timestamp() * 1000
     TIME_DELTA = float(float(BIN_LENGTH / SAMPLE_RATE) / DISPLAY_POINT) * 1000
     print ('Grafana x-axis TIME_START=', TIME_START)
 
