@@ -51,13 +51,13 @@ def get_content():
 
     EQU_ID = target_obj.split('@')[0]
     #EQU_NAME = target_obj.split('@')[0]
-    #FEATURE = target_obj.split('@')[1]
-    #TYPE = target_obj.split('@')[2]
+    FEATURE = target_obj.split('@')[1]
+    TYPE = target_obj.split('@')[2]
     DATE = date_obj.replace("-", "/")
 
     #EQU_NAME = 'ANN 全氫退火爐 #712 循環風扇馬達 A點H向'
-    FEATURE = 'Acceleration RMS band 0'
-    TYPE = 'min'
+    #FEATURE = 'Acceleration RMS band 0'
+    #TYPE = 'min'
     
     #print('EQU_NAME=' + EQU_NAME)
     print('EQU_ID=' + EQU_ID)
