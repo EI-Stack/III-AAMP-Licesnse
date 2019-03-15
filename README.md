@@ -43,7 +43,7 @@ Example
     "intervalMs": 15000,
     "targets": [
         {
-            "target": "1Y510110100@Feature@MAX",
+            "target": "1Y510110100@Acceleration RMS band 0@min",
             "refId": "A",
             "type": "timeserie"
         }
