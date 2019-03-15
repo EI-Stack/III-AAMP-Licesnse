@@ -48,12 +48,16 @@ def get_content():
     target_obj = jsonobj['targets'][0]['target']
     date_obj = jsonobj['range']['from']
     date_obj = date_obj.split('T')[0]
+    
+    DATE = datetime.datetime.strptime(date_obj, '%Y-%m-%dT%H:%M:%S.000Z')
+    DATE = DATE + datetime.timedelta(hours=8)
+    DATE = DATE.strftime('%Y-%m-%d')
 
     EQU_ID = target_obj.split('@')[0]
     #EQU_NAME = target_obj.split('@')[0]
     FEATURE = target_obj.split('@')[1]
     TYPE = target_obj.split('@')[2]
-    DATE = date_obj.replace("-", "/")
+    #DATE = date_obj.replace("-", "/")
 
     #EQU_NAME = 'ANN 全氫退火爐 #712 循環風扇馬達 A點H向'
     #FEATURE = 'Acceleration RMS band 0'
