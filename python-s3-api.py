@@ -44,15 +44,20 @@ def get_content():
     
     # retrieve post JSON object
     jsonobj = request.get_json(silent=True)
+    print(jsonobj)
     target_obj = jsonobj['targets'][0]['target']
     date_obj = jsonobj['range']['from']
     date_obj = date_obj.split('T')[0]
 
-    EQU_NAME = target_obj.split('@')[0]
-    FEATURE = target_obj.split('@')[1]
-    TYPE = target_obj.split('@')[2]
+    #EQU_NAME = target_obj.split('@')[0]
+    #FEATURE = target_obj.split('@')[1]
+    #TYPE = target_obj.split('@')[2]
     DATE = date_obj.replace("-", "/")
 
+    EQU_NAME = 'ANN 全氫退火爐 #712 循環風扇馬達 A點H向'
+    FEATURE = 'Acceleration RMS band 0'
+    TYPE = 'min'
+    
     print('EQU_NAME=' + EQU_NAME)
     print('Feature=' + FEATURE)
     print('Type=' + TYPE)
