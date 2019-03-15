@@ -60,7 +60,7 @@ def get_content():
     TYPE = 'min'
     
     #print('EQU_NAME=' + EQU_NAME)
-    print('EQU_ID=' + EQU_NAME)
+    print('EQU_ID=' + EQU_ID)
     print('Feature=' + FEATURE)
     print('Type=' + TYPE)
     print('Query Date=' + DATE)
