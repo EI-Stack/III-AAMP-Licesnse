@@ -57,6 +57,7 @@ def get_content():
     FEATURE = target_obj.split('@')[1]
     TYPE = target_obj.split('@')[2]
     
+    print('Datatime='+datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     print('EQU_ID=' + EQU_ID)
     print('Feature=' + FEATURE)
     print('Type=' + TYPE)
@@ -64,10 +65,12 @@ def get_content():
     
     TS = query_timestamp(TYPE, FEATURE, EQU_ID, DATE)
     print('Feature assorcated timestamp in Query Date=', TS)
+    print('Datatime='+datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     # establish connection to s3 and search bin file that the mostest close to query date
     S3_BUCKET = get_s3_bucket()
     MACHINE_ID = query_smb (S3_BUCKET, EQU_ID)
+    print('Datatime='+datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     PATH_DEST = MACHINE_ID + '/' + EQU_ID + '/' + str(TS.year) + '/' + str(TS.month) + '/' + str(TS.day) + '/'
     FILE_NAME = query_file (TS, S3_BUCKET, PATH_DEST)
 
@@ -75,6 +78,7 @@ def get_content():
     s3_bin_data = os.path.join(PATH_DEST, FILE_NAME)
     key = S3_BUCKET.get_key(s3_bin_data)
     print('Bin file that the most closest to timestamp in Query Date='+s3_bin_data)
+    print('Datatime='+datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     # download content for convert bin to plantext
     try:
@@ -95,6 +99,7 @@ def get_content():
     TIME_START = TIME_START.timestamp() * 1000
     TIME_DELTA = float(float(BIN_LENGTH / SAMPLE_RATE) / DISPLAY_POINT) * 1000
     print ('Grafana x-axis TIME_START=', TIME_START)
+    print('Datatime='+datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     # delete file which stored in local
     os.remove(FILE_NAME)
