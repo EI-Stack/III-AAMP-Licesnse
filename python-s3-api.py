@@ -69,7 +69,9 @@ def get_content():
 
     # establish connection to s3 and search bin file that the mostest close to query date
     S3_BUCKET = get_s3_bucket()
-    MACHINE_ID = query_smb (S3_BUCKET, EQU_ID)
+    #MACHINE_ID = query_smb (S3_BUCKET, EQU_ID)
+    MACHINE_ID = query_smb_byDigit (EQU_ID)
+    print('Machine ID=' + MACHINE_ID)
     print('Datatime='+datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     PATH_DEST = MACHINE_ID + '/' + EQU_ID + '/' + str(TS.year) + '/' + str(TS.month) + '/' + str(TS.day) + '/'
     FILE_NAME = query_file (TS, S3_BUCKET, PATH_DEST)
@@ -145,6 +147,12 @@ def get_s3_bucket ():
     bucket = s3_connection.get_bucket(BUCKET_NAME, validate=False)
     
     return bucket
+
+def query_smb_byDigit (EQU_ID):
+    
+    machine_id = 'smartbox' + EQU_ID[5] + EQU_ID[6] + ' Signal Data'
+    
+    return machine_id
 
 def query_smb (bucket, EQU_ID):
     
