@@ -224,9 +224,12 @@ def query_timestamp (TYPE, feature, ChannelName, time_start):
 
     ## Retrive timestamp
     index_series = data[feature]
+    
+    print(max_value, type(max_value))
+    print(index_series[index_series == max_value].index)
+    
     dt64 = index_series[index_series == max_value].index.values[0]
     
-    print('dt64=', dt64)
     TS = datetime.datetime.utcfromtimestamp(dt64.tolist()/1e9)
 
     return TS
