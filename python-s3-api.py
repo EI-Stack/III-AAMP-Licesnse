@@ -218,6 +218,7 @@ def query_timestamp (TYPE, feature, ChannelName, time_start):
         max_value = data[feature].max()
     elif TYPE == 'mean':
         max_value = data[feature].mean()
+        max_value = np.float64(format(float(max_value), '.6f'))
     else:
         max_value = data[feature].min()
 
