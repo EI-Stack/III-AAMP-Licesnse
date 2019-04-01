@@ -89,6 +89,7 @@ def get_content():
         return 'File not found'
 
     BIN_DF, BIN_LENGTH = convert_bin(FILE_NAME, DISPLAY_POINT)
+    insert_to_influxdb(BIN_DF)
 
     # calculate start-time and end-time for grafana representation
     HOUR = FILE_NAME.split('-')[3]
@@ -112,6 +113,20 @@ def get_content():
     return RETURN
     
  
+def insert_to_influxdb(df):
+    
+    client = DataFrameClient('192.168.123.240', 
+                         8086, 
+                         '9f5b4165-abce-4be7-92f6-20126ad3130b', 
+                         'RoKZUtYYOK45cqEmhn6k1XniY', 
+                         '3243ffc7-76ab-4c5f-a248-ad1ccd68849e')
+    
+    client.query("delete from s3")
+    client.write_points(df, 's3', protocol='json')
+    client.close()
+    
+    return True
+
 def query_file (TS, bucket, PATH_DEST):
     
     ts_df = pd.DataFrame(columns=['hours', 'minutes'])
