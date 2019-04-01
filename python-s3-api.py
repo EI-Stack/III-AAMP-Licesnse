@@ -115,7 +115,7 @@ def get_content():
  
 def insert_to_influxdb(df):
     
-    insert_df = pd.DataFrame(data=df.values.to_list(),
+    insert_df = pd.DataFrame(data=df,
                              index=pd.date_range(start='2014-11-16', 
                                                  periods=len(df), 
                                                  freq='H'), 
