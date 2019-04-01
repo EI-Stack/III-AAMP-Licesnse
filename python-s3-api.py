@@ -216,15 +216,14 @@ def query_timestamp (TYPE, feature, ChannelName, time_start):
 
     if TYPE == 'max':
         max_value = data[feature].max()
-    elif TYPE == 'mean':
-        max_value = data[feature].mean()
+    elif TYPE == 'median':
+        max_value = data[feature].median()
     else:
         max_value = data[feature].min()
 
     ## Retrive timestamp
-    max_value = format(float(max_value), '.6f')
     index_series = data[feature]
-    dt64 = index_series.astype('str').str.contains(max_value).index.values[0]
+    dt64 = index_series[index_series == max_value].index.values[0]
     TS = datetime.datetime.utcfromtimestamp(dt64.tolist()/1e9)
 
     return TS
