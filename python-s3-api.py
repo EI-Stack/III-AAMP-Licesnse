@@ -115,10 +115,10 @@ def get_content():
  
 def insert_to_influxdb(df):
     
-    insert_df = pd.DataFrame(data=df,
+    insert_df = pd.DataFrame(data=list(df[0].as_matrix()),
                              index=pd.date_range(start='2014-11-16', 
-                                                 periods=len(df), 
-                                                 freq='H'), 
+                                                 periods=len(BIN_DF), 
+                                                 freq='H'),
                              columns=['0'])
     
     client = DataFrameClient('192.168.123.240', 
@@ -128,7 +128,7 @@ def insert_to_influxdb(df):
                              '3243ffc7-76ab-4c5f-a248-ad1ccd68849e')
     
     client.query("delete from s3")
-    #client.write_points(insert_df, 's3', protocol='json')
+    client.write_points(insert_df, 's3', protocol='json')
     client.close()
     
     return True
