@@ -128,7 +128,7 @@ def insert_to_influxdb(df):
                              '3243ffc7-76ab-4c5f-a248-ad1ccd68849e')
     
     client.query("delete from s3")
-    client.write_points(insert_df, 's3', protocol='json')
+    #client.write_points(insert_df, 's3', protocol='json')
     client.close()
     
     return True
