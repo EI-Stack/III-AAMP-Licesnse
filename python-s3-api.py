@@ -117,7 +117,7 @@ def insert_to_influxdb(df):
     
     insert_df = pd.DataFrame(data=list(df[0].as_matrix()),
                              index=pd.date_range(start='2014-11-16', 
-                                                 periods=len(BIN_DF), 
+                                                 periods=len(df), 
                                                  freq='H'),
                              columns=['0'])
     
