@@ -89,7 +89,7 @@ def get_content():
         return 'File not found'
 
     BIN_DF, BIN_LENGTH = convert_bin(FILE_NAME, DISPLAY_POINT)
-    insert_to_influxdb(BIN_DF)
+    #insert_to_influxdb(BIN_DF)
 
     # calculate start-time and end-time for grafana representation
     HOUR = FILE_NAME.split('-')[3]
