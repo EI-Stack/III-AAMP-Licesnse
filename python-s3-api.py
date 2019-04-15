@@ -47,7 +47,6 @@ def get_content():
     print(jsonobj)
     target_obj = jsonobj['targets'][0]['target']
     date_obj = jsonobj['range']['from']
-    #date_obj = date_obj.split('T')[0]
     
     DATE = datetime.datetime.strptime(date_obj, '%Y-%m-%dT%H:%M:%S.%fZ')
     DATE = DATE + datetime.timedelta(hours=8)
@@ -56,34 +55,31 @@ def get_content():
     EQU_ID = target_obj.split('@')[0]
     FEATURE = target_obj.split('@')[1]
     TYPE = target_obj.split('@')[2]
+    SPECIFIC_TIME = target_obj.split('@')[-1]
     
-    #print('Datatime='+datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     print('EQU_ID=' + EQU_ID)
     print('Feature=' + FEATURE)
     print('Type=' + TYPE)
     print('Query Date=' + DATE)
     
-    TS = query_timestamp(TYPE, FEATURE, EQU_ID, DATE)
+    if SPECIFIC_TIME.isdigit():
+        TS = datetime.datetime.fromtimestamp(int(time)).strftime('%Y-%m-%d %H:%M:%S')
+    else:
+        TS = query_timestamp (TYPE, FEATURE, EQU_ID, DATE)
     print('Feature assorcated timestamp in Query Date=', TS)
-    #print('Datatime='+datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     # establish connection to s3 and search bin file that the mostest close to query date
     S3_BUCKET = get_s3_bucket()
-    #MACHINE_ID = query_smb (S3_BUCKET, EQU_ID)
+    
+    # parsing EQU_ID to get SMB_ID, for combining S3 Path
     MACHINE_ID = query_smb_byDigit (EQU_ID)
-    print('Machine ID=' + MACHINE_ID)
-    #print('Datatime='+datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     PATH_DEST = MACHINE_ID + '/' + EQU_ID + '/' + str(TS.year) + '/' + str(TS.month) + '/' + str(TS.day) + '/'
     FILE_NAME = query_file (TS, S3_BUCKET, PATH_DEST)
-    #FILE_NAME = 'Raw Data-1-1Y520210407-22-05-47_8192.bin'
-    print(FILE_NAME)
 
     # goto bucket and get file accroding to the file name
     s3_bin_data = os.path.join(PATH_DEST, FILE_NAME)
-    print(s3_bin_data)
     key = S3_BUCKET.get_key(s3_bin_data)
     print('Bin file that the most closest to timestamp in Query Date='+s3_bin_data)
-    #print('Datatime='+datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     # download content for convert bin to plantext
     try:
@@ -223,8 +219,8 @@ def query_timestamp (TYPE, feature, ChannelName, time_start):
     
     time_start = time_start.replace("/", "-")
     time_end = datetime.datetime.strptime(time_start, '%Y-%m-%d') + datetime.timedelta(days=1)
-    print('time_end', type(time_end), time_end)
-    time_end = time_end.strftime("%Y-%m-%d")
+    #print('time_end', type(time_end), time_end)
+    #time_end = time_end.strftime("%Y-%m-%d")
     print('time_end', type(time_end), time_end)
 
     ## Query InfluxDB
