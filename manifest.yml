@@ -1,6 +1,6 @@
 ---
 applications:
-- name: s3-api-wavelet
+- name: s3-api
   memory: 512M
   instances: 1
   buildpack: python_buildpack_offline
