@@ -75,9 +75,12 @@ def get_content():
     #print('Datatime='+datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     PATH_DEST = MACHINE_ID + '/' + EQU_ID + '/' + str(TS.year) + '/' + str(TS.month) + '/' + str(TS.day) + '/'
     FILE_NAME = query_file (TS, S3_BUCKET, PATH_DEST)
+    #FILE_NAME = 'Raw Data-1-1Y520210407-22-05-47_8192.bin'
+    print(FILE_NAME)
 
     # goto bucket and get file accroding to the file name
     s3_bin_data = os.path.join(PATH_DEST, FILE_NAME)
+    print(s3_bin_data)
     key = S3_BUCKET.get_key(s3_bin_data)
     print('Bin file that the most closest to timestamp in Query Date='+s3_bin_data)
     #print('Datatime='+datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
@@ -220,9 +223,9 @@ def query_timestamp (TYPE, feature, ChannelName, time_start):
     
     time_start = time_start.replace("/", "-")
     time_end = datetime.datetime.strptime(time_start, '%Y-%m-%d') + datetime.timedelta(days=1)
-    #print('time_end', type(time_end), time_end)
+    print('time_end', type(time_end), time_end)
     time_end = time_end.strftime("%Y-%m-%d")
-    #print('time_end', type(time_end), time_end)
+    print('time_end', type(time_end), time_end)
 
     ## Query InfluxDB
     measurement, data = read_influxdb_data(host = IDB_HOST,
@@ -245,7 +248,7 @@ def query_timestamp (TYPE, feature, ChannelName, time_start):
     ## Retrive timestamp
     index_series = data[feature]
     dt64 = index_series[index_series == max_value].index.values[0]
-    TS = datetime.datetime.utcfromtimestamp(dt64.tolist()/1e9)
+    TS = datetime.datetime.utcfromtimestamp(dt64.tolist()/1e9) + datetime.timedelta(hours=8)
 
     return TS
 
