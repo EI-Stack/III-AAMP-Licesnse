@@ -220,8 +220,8 @@ def query_timestamp (TYPE, feature, ChannelName, time_start):
     time_start = time_start.replace("/", "-")
     time_end = datetime.datetime.strptime(time_start, '%Y-%m-%d') + datetime.timedelta(days=1)
     #print('time_end', type(time_end), time_end)
-    #time_end = time_end.strftime("%Y-%m-%d")
-    print('time_end', type(time_end), time_end)
+    time_end = time_end.strftime("%Y-%m-%d")
+    #print('time_end', type(time_end), time_end)
 
     ## Query InfluxDB
     measurement, data = read_influxdb_data(host = IDB_HOST,
