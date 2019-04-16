@@ -62,7 +62,7 @@ def get_content():
     print('Type=' + TYPE)
     print('Query Date=' + DATE)
     
-    if SPECIFIC_TIME.isdigit():
+    if SPECIFIC_TIME.isdigit() and len(SPECIFIC_TIME) > 3:
         TS = datetime.datetime.fromtimestamp(int(time)).strftime('%Y-%m-%d %H:%M:%S')
     else:
         TS = query_timestamp (TYPE, FEATURE, EQU_ID, DATE)
