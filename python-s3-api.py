@@ -241,6 +241,7 @@ def query_timestamp (TYPE, feature, ChannelName, time_start):
     else:
         max_value = data.sort_values(by=[feature])[feature][0]
 
+    print('value=', max_value)
     ## Retrive timestamp
     index_series = data[feature]
     dt64 = index_series[index_series == max_value].index.values[0]
