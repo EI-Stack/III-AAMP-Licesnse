@@ -376,7 +376,7 @@ def read_influxdb_data(host='192.168.123.245',
     
     
     querystr = 'select * from "{}" where time > {} and time < {}'.format(measurement,time_start,time_end)
-    #print(querystr)
+    print(querystr)
     
     df = client.query(querystr).get(measurement)
     client.close()
