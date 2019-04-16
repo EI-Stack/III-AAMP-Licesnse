@@ -368,10 +368,10 @@ def read_influxdb_data(host='192.168.123.245',
     
     measurement = measurement[-1]
     
-    time_start = 'now()' if time_start=='' else "'" + time_start + ' 00:00:00' + "'"
+    time_start = 'now()' if time_start=='' else "'" + time_start + ' 16:00:00' + "'"
     #print(time_start)
     
-    time_end = 'now()' if time_end=='' else "'" + time_end + ' 00:00:00' + "'"
+    time_end = 'now()' if time_end=='' else "'" + time_end + ' 15:59:59' + "'"
     #print(time_end)
     
     
