@@ -63,7 +63,7 @@ def get_content():
     print('Query Date=' + DATE)
     
     # User specified a timestamp
-    SPECIFIC_TIME = SPECIFIC_TIME.split('.')[0]
+    SPECIFIC_TIME = SPECIFIC_TIME.split('\.')[0]
     if SPECIFIC_TIME.isdigit() and len(SPECIFIC_TIME) > 3:
         print('user specified time and date')
         TS = datetime.datetime.fromtimestamp(int(SPECIFIC_TIME[0:10]))
