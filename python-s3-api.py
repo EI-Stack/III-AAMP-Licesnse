@@ -65,7 +65,7 @@ def get_content():
     # User specified a timestamp
     SPECIFIC_TIME = SPECIFIC_TIME.split('.')[0]
     if SPECIFIC_TIME.isdigit() and len(SPECIFIC_TIME) > 3:
-        TS = datetime.datetime.fromtimestamp(int(SPECIFIC_TIME)).strftime('%Y-%m-%d %H:%M:%S')
+        TS = datetime.datetime.fromtimestamp(int(SPECIFIC_TIME[0:10])).strftime('%Y-%m-%d %H:%M:%S')
     else:
         TS = query_timestamp (TYPE, FEATURE, EQU_ID, DATE)
     print('Feature assorcated timestamp in Query Date=', TS)
