@@ -137,8 +137,12 @@ def query_file (TS, bucket, PATH_DEST):
     ts_df = pd.DataFrame(columns=['hours', 'minutes'])
     filename_df = pd.DataFrame(columns=['filename'])
     for key in bucket.list(prefix=PATH_DEST): 
-        ts_df = ts_df.append(pd.Series(key.name.split('-')[3:5], index=['hours', 'minutes']), ignore_index=True)
-        filename_df = filename_df.append(pd.Series(key.name.split('/')[-1], index=['filename']), ignore_index=True)
+        
+        try:
+            ts_df = ts_df.append(pd.Series(key.name.split('-')[3:5], index=['hours', 'minutes']), ignore_index=True)
+            filename_df = filename_df.append(pd.Series(key.name.split('/')[-1], index=['filename']), ignore_index=True)
+        except: 
+            pass
 
     ts_df = pd.concat([ts_df, filename_df], axis=1, join_axes=[filename_df.index])
     
