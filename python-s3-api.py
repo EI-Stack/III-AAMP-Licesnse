@@ -62,6 +62,8 @@ def get_content():
     print('Type=' + TYPE)
     print('Query Date=' + DATE)
     
+    # User specified a timestamp
+    SPECIFIC_TIME = SPECIFIC_TIME.split('.')[0]
     if SPECIFIC_TIME.isdigit() and len(SPECIFIC_TIME) > 3:
         TS = datetime.datetime.fromtimestamp(int(time)).strftime('%Y-%m-%d %H:%M:%S')
     else:
