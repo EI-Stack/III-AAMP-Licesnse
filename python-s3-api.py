@@ -67,6 +67,7 @@ def get_content():
     if SPECIFIC_TIME.isdigit() and len(SPECIFIC_TIME) > 3:
         print('user specified time and date')
         TS = datetime.datetime.fromtimestamp(int(SPECIFIC_TIME[0:10]))
+        TS = TS + datetime.timedelta(hours=8)
         print('Feature assorcated timestamp in Query Date=', TS)
     else:
         print('user specified by query')
