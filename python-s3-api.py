@@ -65,10 +65,13 @@ def get_content():
     # User specified a timestamp
     SPECIFIC_TIME = SPECIFIC_TIME.split('.')[0]
     if SPECIFIC_TIME.isdigit() and len(SPECIFIC_TIME) > 3:
+        print('user specified time and date')
         TS = datetime.datetime.fromtimestamp(int(SPECIFIC_TIME[0:10]))
+        print('Feature assorcated timestamp in Query Date=', TS)
     else:
+        print('user specified by query')
         TS = query_timestamp (TYPE, FEATURE, EQU_ID, DATE)
-    print('Feature assorcated timestamp in Query Date=', TS)
+        print('Feature assorcated timestamp in Query Date=', TS)
 
     # establish connection to s3 and search bin file that the mostest close to query date
     S3_BUCKET = get_s3_bucket()
