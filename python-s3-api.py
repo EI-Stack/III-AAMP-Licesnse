@@ -81,6 +81,10 @@ def get_content():
     MACHINE_ID = query_smb_byDigit (EQU_ID)
     PATH_DEST = MACHINE_ID + '/' + EQU_ID + '/' + str(TS.year) + '/' + str(TS.month) + '/' + str(TS.day) + '/'
     FILE_NAME = query_file (TS, S3_BUCKET, PATH_DEST)
+    
+    # to catch bin file not exist issue, for example: 1Y510110107, 2019-05-21T20:49:55.000Z
+    if FILE_NAME is 'null':
+        return 'File not found'
 
     # goto bucket and get file accroding to the file name
     s3_bin_data = os.path.join(PATH_DEST, FILE_NAME)
@@ -155,7 +159,12 @@ def query_file (TS, bucket, PATH_DEST):
     ts_hour_df = ts_df.loc[(ts_df['hours'] == TS.strftime('%H')) ]
     ts_df = ts_hour_df.loc[abs(ts_hour_df['minutes'].astype('int') - TS.minute)<=5 ].head(1)
     
-    return ts_df['filename'].values[0]
+    try: 
+        filename = ts_df['filename'].values[0]
+    except:
+        filename = 'null'
+    
+    return filename
 
 def get_s3_bucket ():
     # load value of key for access blob container (bucket)
