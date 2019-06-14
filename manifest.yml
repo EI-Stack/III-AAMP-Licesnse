@@ -1,6 +1,6 @@
 ---
 applications:
-- name: s3-api
+- name: s3-api-helloworld
   memory: 512M
   instances: 1
   buildpack: python_buildpack_offline
