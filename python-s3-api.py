@@ -46,7 +46,7 @@ def get_content():
     b = int(jsonobj['b'])
     
     
-    return a+b
+    return str(a+b)
     
 
 if __name__ == '__main__':
