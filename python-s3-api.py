@@ -38,15 +38,12 @@ def test_1():
 #@app.route('/blob/api/v1.0/get_content', methods=['POST'])
 @app.route('/query', methods=['POST'])
 def get_content():
-    
-    SAMPLE_RATE = 8192
-    DISPLAY_POINT = 65536
-    
+
     # retrieve post JSON object
     jsonobj = request.get_json(silent=True)
     print(jsonobj)
-    a = jsonobj['a']
-    b = jsonobj['b']
+    a = int(jsonobj['a'])
+    b = int(jsonobj['b'])
     
     
     return a+b
