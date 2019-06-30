@@ -11,18 +11,11 @@ import os
 import json
 import datetime
 
-import binascii
-import struct
-
-import requests
-
 from flask import Flask
 from flask import request
 from flask import jsonify
-from influxdb import DataFrameClient
 
 app = Flask(__name__)
-
 
 @app.route("/", methods=['GET','POST'])
 def test_1():
@@ -42,8 +35,7 @@ def get_content():
     # retrieve post JSON object
     jsonobj = request.get_json(silent=True)
     print(jsonobj)
-    a = int(jsonobj['a'])
-    b = int(jsonobj['b'])
+    a = int(jsonobj['aamp'])
     
     license_str = 'Vm0weGQxSXhiRmhTV0doVVYwZDRWMWxVU205V2JHeFZVbTFHVjFac2JETlhhMXBQVmxVeFYyTkliRmhoTVVwRVZrZHplRll4VG5GUmJIQk9VbXh2ZWxaclpEUldNVnBXVFZWV2FHVnFRVGs9'
     

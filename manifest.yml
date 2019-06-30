@@ -1,6 +1,6 @@
 ---
 applications:
-- name: s3_api
-  memory: 512M
+- name: license
+  memory: 128M
   instances: 1
   buildpack: python_buildpack_offline
